@@ -1,0 +1,238 @@
+<div class="container cont-pages">
+  <div class="row" *ngIf="profile[0]">
+    <div class="row cover-container justify-content-center">
+      <img class="cover-photo" src="http://localhost:3000/images/{{profile[0].coverPhoto}}">
+      <img class="profile-photo" src="http://localhost:3000/images/{{profile[0].profilePhoto}}">
+      <p class="name-p"><span class="name">{{profile[0].user[0].companyName}}</span><br><span class="location">{{profile[0].user[0].city}},&nbsp;{{profile[0].user[0].country}}</span></p>
+    </div>
+    <div class="col-sm-12">
+      <div class="row">
+        <div class="navi-container col-sm-12">
+          <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+            <li class="nav-item">
+              <a class="nav-link active" id="pills-home-tab" data-toggle="pill" href="#pills-home" role="tab" aria-controls="pills-home" aria-selected="true">O nama</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" id="pills-profile-tab" data-toggle="pill" href="#pills-cargos" role="tab" aria-controls="pills-profile" aria-selected="false" *ngIf="drivers == true || both == true">Aktivne ponude</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" id="pills-contact-tab" data-toggle="pill" href="#pills-contact" role="tab" aria-controls="pills-contact" aria-selected="false">Flota</a>
+            </li>
+          </ul>
+          <div class="tab-content" id="pills-tabContent">
+            <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
+              <div class="col-sm-12">
+                <div class="row">
+                  <div class="col-sm-8">
+                    <mat-card>
+                      <div class="container">
+                        <p>
+                          {{profile[0].about}}
+                        </p>
+                        <p>
+                          <b>Web adresa:&nbsp;</b><a href="{{profile[0].web}}">{{profile[0].web}}</a><br>
+                          <b>Broj zaposlenih:&nbsp;</b>{{profile[0].employees}}<br>
+                          <b>Godina osnivanja:&nbsp;</b>{{profile[0].year}}<br>
+                          <b>Radno vrijeme:&nbsp;</b>{{profile[0].workingHours}}<br>
+                        </p>
+                      </div>
+                    </mat-card>
+                  </div>
+                  <div class="col-sm-4">
+                    <div class="container" *ngIf="!showReviewForm">
+                      <p>RECENZIJE</p>
+                      <mat-card *ngFor="let review of reviews" class="reviews">
+                        <img class="profile-photo" src="http://localhost:3000/images/{{profile[0].profilePhoto}}">
+                        <p>{{review.review}}</p>
+                        <ngb-rating [(rate)]="review.stars" max="5" readonly="true"></ngb-rating>
+                      </mat-card>
+                      <button class="link" (click)="toggleReview()">Dodaj recenziju +</button>
+                    </div>
+                    <div class="container" *ngIf="showReviewForm">
+                      <form [formGroup]="reviewForm" (submit)="onAddReview(profile[0].user[0]._id)" *ngIf="!isLoading">
+                        <div class="form-group">
+                          <label>Dodaj recenziju (Max 100 znakova)</label>
+                          <textarea maxlength="100" formControlName="review" placeholder="Insert review" class="form-control"></textarea>
+                          <div class="error" *ngIf="submitted && reviewForm.controls.review.errors?.required">review is required</div>
+                        </div>
+                        <div class="form-group">
+                          <ngb-rating formControlName='stars' max="5"></ngb-rating>
+                          <div *ngIf="submitted && stars.invalid" class="error">Please rate us</div>
+                        </div>
+                        <div class="justify-content-center">
+                          <button type="submit" class="button-basic">Go</button>
+                          <button class="link" (click)="toggleReview()">Close</button>
+                        </div>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="tab-pane fade" id="pills-cargos" role="tabpanel" aria-labelledby="pills-cargos-tab" *ngIf="drivers == true || both == true">
+              <div class="row justify-content-center">
+                <mat-card *ngFor="let cargo of cargos">
+                  <div class="col-sm-4 text-center cargo-container">
+                    <div class="row justify-content-center">
+                      <div class="icon-wrapper">
+                        <div class="icon icon-cargo-{{cargo.cargoType}}">
+                          <div class="info-1">
+                            <span>{{cargo.price}} EUR/km</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="row justify-content-center">
+                      <div class="route">
+                        <span>{{cargo.loads[0].city}} - {{cargo.unLoads[0].city}}</span><br>
+                      </div>
+                    </div>
+                    <div class="row justify-content-center">
+                      <div class="info-2">
+                        <span><b>Vrsta tereta:</b> &nbsp;</span>
+                        <span *ngIf="cargo.cargoType == 'adr'">ADR</span>
+                        <span *ngIf="cargo.cargoType == 'refrigerated'">hlađena/smrznuta roba</span>
+                        <span *ngIf="cargo.cargoType == 'ind_liq'">industrijske tekućine</span>
+                        <span *ngIf="cargo.cargoType == 'food_liq'">prehrambene tekućine</span>
+                        <span *ngIf="cargo.cargoType == 'ind_bulk'">industrijski rasuti teret</span>
+                        <span *ngIf="cargo.cargoType == 'food_bulk'">prehrambeni rasuti teret</span>
+                        <span *ngIf="cargo.cargoType == 'special'">izvanredni teret</span>
+                        <span *ngIf="cargo.cargoType == 'container'">kontejner</span>
+                        <span *ngIf="cargo.cargoType == 'not_palletized'">ne paletriana roba</span>
+                        <span *ngIf="cargo.cargoType == 'palletized'">paletirana roba</span>
+                        <span *ngIf="cargo.cargoType == 'vehicles'">vozila</span>
+                        <span *ngIf="cargo.cargoType == 'special_lengths'">roba posebnih dužina</span>
+                        <span *ngIf="cargo.cargoType == 'special_heights'">roba posebnih visina</span>
+                        <span *ngIf="cargo.cargoType == 'large_dimensions'">roba velikih dimenzija</span>
+                        <span *ngIf="cargo.cargoType == 'hang'">viseći teret</span>
+                        <span *ngIf="cargo.cargoType == 'animals'">životinje</span>
+                        <span *ngIf="cargo.cargoType == 'other'">ostalo</span>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="info-3 col-sm-12">
+                        <div class="row">
+                        <div class="col-sm-6">
+                          <span><b>Utovarna mjesta:</b>&nbsp;{{cargo.loads.length}}</span><br>
+                          <span><b>Datum utovara:</b><br>13.03.2021</span>
+                        </div>
+                        <div class="col-sm-6">
+                          <span><b>Istovarna mjesta:</b>&nbsp;{{cargo.unLoads.length}}</span><br>
+                          <span><b>Rok isporuke:</b><br>13.03.2021</span>
+                        </div>
+                      </div>
+                      </div>
+                    </div>
+                    <div class="row justify-content-center">
+                      <a class="button-basic" data-toggle="modal" href="#Modal{{cargo._id}}">GO</a>
+                    </div>
+                    <div class="modal fade" id="Modal{{cargo._id}}" tabindex="-1" role="dialog" aria-hidden="true">
+                      <div class="modal-dialog">
+                        <div class="modal-content">
+                          <div class="container">
+                            <div class="row justify-content-center">
+                                <div class="modal-body">
+                                  <div class="container">
+                                    <mat-spinner *ngIf="isLoading"></mat-spinner>
+                                    <div class="close-modal" data-dismiss="modal"><img src="assets/img/close-icon.svg" alt="Close modal" />Close</div>
+                                    <mat-horizontal-stepper #stepper [selectedIndex]="0">
+                                      <mat-step label="Odabir tereta">
+                                        <div class="row">
+                                          <div class="container">
+                                            <p class="p-upper">Ponuda tereta {{cargo._id}}</p>
+                                          </div>
+                                          <div class="col-sm cargo-container">
+                                            <div class="row justify-content-center">
+                                              <div class="icon-wrapper">
+                                                <div class="icon icon-cargo-{{cargo.cargoType}}">
+                                                  <div class="info-1">
+                                                    <span>{{cargo.price}} EUR/km</span>
+                                                  </div>
+                                                </div>
+                                              </div>
+                                            </div>
+                                          </div>
+                                        </div>
+                                        <div class="row justify-content-center">
+                                          <div class="route">
+                                            <span>{{cargo.loads[0].city}} - {{cargo.unLoads[0].city}}</span><br>
+                                          </div>
+                                        </div>
+                                        <div class="row">
+                                          <div class="info-2">
+                                            <span><b>Vrsta tereta:</b> &nbsp;</span>
+                                            <span *ngIf="cargo.cargoType == 'adr'">ADR</span>
+                                            <span *ngIf="cargo.cargoType == 'refrigerated'">hlađena/smerznuta roba</span>
+                                            <span *ngIf="cargo.cargoType == 'ind_liq'">industrijske tekućine</span>
+                                            <span *ngIf="cargo.cargoType == 'food_liq'">prehrambene tekućine</span>
+                                            <span *ngIf="cargo.cargoType == 'ind_bulk'">industrijski rasuti teret</span>
+                                            <span *ngIf="cargo.cargoType == 'food_bulk'">prehrambeni rasuti teret</span>
+                                            <span *ngIf="cargo.cargoType == 'special'">izvanredni teret</span>
+                                            <span *ngIf="cargo.cargoType == 'container'">kontejner</span>
+                                            <span *ngIf="cargo.cargoType == 'not_palletized'">ne paletriana roba</span>
+                                            <span *ngIf="cargo.cargoType == 'palletized'">paletirana roba</span>
+                                            <span *ngIf="cargo.cargoType == 'vehicles'">vozila</span>
+                                            <span *ngIf="cargo.cargoType == 'special_lengths'">roba posebnih dužina</span>
+                                            <span *ngIf="cargo.cargoType == 'special_heights'">roba posebnih visina</span>
+                                            <span *ngIf="cargo.cargoType == 'large_dimensions'">roba velikih dimenzija</span>
+                                            <span *ngIf="cargo.cargoType == 'hang'">viseći teret</span>
+                                            <span *ngIf="cargo.cargoType == 'animals'">životinje</span>
+                                            <span *ngIf="cargo.cargoType == 'other'">ostalo</span>
+                                          </div>
+                                        </div>
+                                        <div class="row">
+                                          <div class="info-3 col-sm-12 mt-6">
+                                            <div class="row">
+                                            <div class="col-sm-6">
+                                              <div *ngFor="let load of cargo.loads; let i=index;">
+                                                <span><b>Utovarno mjesto {{ i + 1 }} </b></span><br>
+                                                <span>{{load.address}}, {{load.city}}, {{load.countryCode}}, {{toDateFormat(load.date)}}, {{load.time}}</span>
+                                              </div>
+                                            </div>
+                                            <div class="col-sm-6">
+                                              <div *ngFor="let unLoad of cargo.unLoads; let i=index;">
+                                                <span><b>Istovarno mjesto {{ i + 1 }} </b></span><br>
+                                                <span>{{unLoad.address}}, {{unLoad.city}}, {{unLoad.countryCode}}, {{toDateFormat(unLoad.date)}}, {{unLoad.time}}</span>
+                                              </div>
+                                            </div>
+                                          </div>
+                                        </div>
+                                        <div class="container" *ngIf="areTrucks">
+                                          <mat-card>
+                                            <p>Proučio sam uvjete i želim poslat ponudu</p>
+                                            <form [formGroup]="cargoSignupForm" (submit)="onSignupForCargo(cargo.id)" *ngIf="!isLoading">
+                                              <select class="form-control" formControlName="truckId">
+                                                <option value="" disabled selected hidden>Odaberi kamion</option>
+                                                <option *ngFor="let truck of trucks" value="{{truck._id}}">{{truck.regNumber}}</option>
+                                              </select>
+                                              <input type="submit" value="GO" class="button-basic">
+                                            </form>
+                                          </mat-card>
+                                        </div>
+                                      </div>
+                                    </mat-step>
+                                    <mat-step label="Obrada">
+
+                                    </mat-step>
+                                    <mat-step label="Informacije">
+
+                                    </mat-step>
+                                  </mat-horizontal-stepper>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </mat-card>
+              </div>
+            </div>
+            <div class="tab-pane fade" id="pills-contact" role="tabpanel" aria-labelledby="pills-contact-tab">3...</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,81 @@
+<nav class="navbar navbar-expand-md fixed-top navbar-light" id="mainNav">
+  <div class="container-fluid">
+    <a class="navbar-brand" routerLink="/"><img src="../../assets/logo.png"></a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+        <span class="sr-only"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav main-nav mr-auto">
+        <li class="nav-item dropdown" *ngIf="userIsAdmin">
+          <a id="navbarDropdown" class="dropdown-toggle nav-link" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+            Admin
+          </a>
+          <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+            <a class="nav-link" routerLink="/admin/dashboard">Nadzorna ploća</a>
+            <a class="nav-link" routerLink="/admin/users">Korisnici</a>
+          </div>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" routerLink="/listCargos">Ponuda tereta</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/listTransports">Ponuda transporta</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/services">Usluge</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/howItWorks">Kako funkcionira Rasingo</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" routerLink="/about">O nama</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" routerLink="/contact">Kontakt</a>
+        </li>
+      </ul>
+      <ul class="navbar-nav main-nav ml-auto">
+        <li class="nav-item" *ngIf="stepsCompleted == 'active'"><a class="nav-link" mat-basic-button [routerLink]="['/auth/signupStep'+step]">Finish Signup</a></li>
+        <li class="nav-item" *ngIf="!userIsAuthenticated"><a class="nav-link" mat-basic-button routerLink="/auth/login">Login</a></li>
+        <li class="nav-item" *ngIf="!userIsAuthenticated"><a class="nav-link" mat-basic-button routerLink="/auth/signupStep0">Signup</a></li>
+        <li class="nav-item dropdown" *ngIf="userIsAuthenticated">
+          <a id="navbarDropdown" class="dropdown-toggle nav-link" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+            {{email}}
+          </a>
+          <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+            <a class="nav-link" routerLink="/createCargo">Add new cargo</a>
+            <a class="nav-link" routerLink="/createTransport">Add new transport</a>
+            <a class="nav-link" routerLink="/mySignUps">My signups</a>
+            <a class="nav-link" routerLink="/firmSignUps">Firm signups</a>
+            <a class="nav-link" routerLink="/myCargoList">Moja ponuda tereta</a>
+          </div>
+        </li>
+        <li class="nav-item dropdown" *ngIf="userIsAuthenticated">
+          <a id="navbarDropdown" class="dropdown-toggle nav-link" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+            <i class="fas fa-user-cog"></i>
+          </a>
+          <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+            <a class="nav-link" routerLink="/auth/myTrucks">Postavke kamiona</a>
+            <a class="nav-link" routerLink="/showMyProfile">Profile</a>
+            <a class="nav-link" routerLink="/auth/editAccount">Account Settings</a>
+            <button class="nav-link nav-link-button" (click)="onLogout()">Logout</button>
+          </div>
+        </li>
+        <li>
+          <div class="selectdiv">
+            <select
+              #selectedLang
+              (change)="switchLang(selectedLang.value)">
+                <option *ngFor="let language of translate.getLangs()"
+                  [value]="language"
+                  [selected]="language === translate.currentLang">
+                  {{ language }}
+                </option>
+            </select>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>

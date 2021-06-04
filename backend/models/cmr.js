@@ -1,0 +1,41 @@
+const mongoose = require("mongoose");
+
+const cmrSchema = mongoose.Schema({
+  sender: { type: String },
+  intList: { type: String },
+  reciever: { type: String },
+  transporter: { type: String },
+  otherTransporters: { type: String },
+  placeOfDelivery: { type: String },
+  placeAndDateOfPickUp: { type: String },
+  remarks: { type: String },
+  accompanyingLists: { type: String },
+  label: { type: String },
+  parcelNum: { type: String },
+  typeOfPackaging: { type: String },
+  typeOfCargo: { type: String },
+  statisticNum: { type: String },
+  grossWeight: { type: String },
+  volume: { type: String },
+  instructions: { type: String },
+  deals: { type: String },
+  provisions: { type: String },
+  expensesSender: { type: String },
+  expensesCurrency: { type: String },
+  expensesReciever: { type: String },
+  residueSender: { type: String },
+  residueCurrency: { type: String },
+  residueReciever: { type: String },
+  totalSender: { type: String },
+  totalCurrency: { type: String },
+  totalReciever: { type: String },
+  turned: { type: String },
+  company: { type: String },
+  signatureSender: { type: String },
+  signatureTransporter: { type: String },
+  signatureReciever: { type: String },
+  userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+  signupId: { type: mongoose.Schema.Types.ObjectId, ref: "Signup", required: true }
+});
+
+module.exports = mongoose.model("Cmr", cmrSchema);

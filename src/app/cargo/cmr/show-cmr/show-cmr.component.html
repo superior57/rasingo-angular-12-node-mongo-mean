@@ -1,0 +1,203 @@
+<div class="container-fluid pages">
+  <div class="container header-add-pages">
+    <h1>Izrada CMR-a</h1>
+  </div>
+  <div class="container cont-pages">
+    <mat-card id="htmlData">
+        <mat-spinner *ngIf="isLoading"></mat-spinner>
+        <div class="col-md-12" id="table-data">
+        <table class="table cmr-cont" *ngIf="fullCmrData">
+          <tbody>
+            <tr>
+              <td class="td-50">
+                <p class="heading">1. Pošiljatelj</p>
+                <p class="black">{{fullCmrData.sender}}</p>
+              </td>
+              <td class="td-50">
+                <p class="heading">MEĐUNARODNI TOVARNI LIST</p>
+                <p class="black">{{fullCmrData.intList}}</p>
+              </td>
+            </tr>
+            <tr>
+              <td class="td-50">
+                <p class="heading">2. Primatelj</p>
+                <p class="black">{{fullCmrData.reciever}}</p>
+              </td>
+              <td rowspan="2" class="td-50">
+                <p class="heading">16. Prijevoznik</p>
+                <p class="black">{{fullCmrData.transporter}}</p>
+                <p class="heading">17. Ostali prijevoznici</p>
+                <p class="black">{{fullCmrData.otherTransporters}}</p>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <p class="heading">3. Mjesto isporuke</p>
+                <p class="black">{{fullCmrData.placeOfDelivery}}</p>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <p class="heading">4.Mjesto i datum preuzimanja pošiljke na prijevoz</p>
+                <p class="black">{{fullCmrData.placeAndDateOfPickUp}}</p>
+              </td>
+              <td rowspan="2">
+                <p class="heading">18. Primjedbe i ograničenja prijevoznika</p>
+                <p class="black">{{fullCmrData.remarks}}</p>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <p class="heading">5. Popratne liste</p>
+                <p class="black">{{fullCmrData.accompanyingLists}}</p>
+              </td>
+            </tr>
+            <tr>
+              <td colspan="2">
+                <table class="table sub-table-1">
+                  <tbody>
+                    <tr>
+                      <td class="no-border">
+                        <p class="heading">6. Oznaka i broj</p>
+                        <p class="black">{{fullCmrData.label}}</p>
+                      </td>
+                      <td class="no-border">
+                        <p class="heading">7. Broj koleta</p>
+                        <p class="black">{{fullCmrData.parcelNum}}</p>
+                      </td>
+                      <td class="no-border">
+                        <p class="heading">8. Vrsta ambalaže</p>
+                        <p class="black">{{fullCmrData.typeOfPackaging}}</p>
+                      </td>
+                      <td class="no-border">
+                        <p class="heading">9. Vrsta robe</p>
+                        <p class="black">{{fullCmrData.typeOfCargo}}</p>
+                      </td>
+                      <td rowspan="2">
+                        <p class="heading">10. Statistički broj</p>
+                        <p class="black">{{fullCmrData.statisticNum}}</p>
+                      </td>
+                      <td rowspan="2">
+                        <p class="heading">11. Bruto težina</p>
+                        <p class="black">{{fullCmrData.grossWeight}}</p>
+                      </td>
+                      <td rowspan="2" class="n-border-right">
+                        <p class="heading">12. Zapremnina</p>
+                        <p class="black">{{fullCmrData.volume}}</p>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="b-top"><p class="heading">Class</p></td>
+                      <td class="b-top"><p class="heading">Num</p></td>
+                      <td class="b-top"><p class="heading">Letter</p></td>
+                      <td class="b-top"><p class="heading">ADR</p></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <p class="heading">13. Uputstva pošiljatelja</p>
+                <p class="black">{{fullCmrData.instructions}}</p>
+              </td>
+              <td>
+                <p class="heading">19. Posebni dogovori</p>
+                <p class="black">{{fullCmrData.deals}}</p>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <p class="heading">14. Odredbe o plažćanju vozarine</p>
+                <p class="black">{{fullCmrData.provisions}}</p>
+              </td>
+              <td>
+                <table class="table sub-table-2">
+                  <tbody>
+                    <tr>
+                      <td><p class="heading">20. Plaća</p></td>
+                      <td><p class="heading">Pošiljatelj</p></td>
+                      <td><p class="heading">Valuta</p></td>
+                      <td class="n-border-right"><p class="heading">Primatelj</p></td>
+                    </tr>
+                    <tr>
+                      <td><p class="heading">Prijevozni troškovi</p></td>
+                      <td>
+                        <p class="black">{{fullCmrData.expensesSender}}</p>
+                      </td>
+                      <td>
+                        <p class="black">{{fullCmrData.expensesCurrency}}</p>
+                      </td>
+                      <td class="n-border-right">
+                        <p class="black">{{fullCmrData.expensesReciever}}</p>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <p class="heading">
+                          Ostatak<br>Dodatak<br>Ostali troškovi
+                        </p>
+                      </td>
+                      <td>
+                        <p class="black">{{fullCmrData.residueSender}}</p>
+                      </td>
+                      <td>
+                        <p class="black">{{fullCmrData.residueCurrency}}</p>
+                      </td>
+                      <td class="n-border-right">
+                        <p class="black">{{fullCmrData.residueReciever}}</p>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><p class="heading">Ukupno</p></td>
+                      <td>
+                        <p class="black">{{fullCmrData.totalSender}}</p>
+                      </td>
+                      <td>
+                        <p class="black">{{fullCmrData.totalCurrency}}</p>
+                      </td>
+                      <td class="n-border-right">
+                        <p class="black">{{fullCmrData.totalReciever}}</p>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <p class="heading">21. Ispostavljeno u</p>
+                <p class="black">{{fullCmrData.turned}}</p>
+              </td>
+              <td>
+                <p class="heading">15. Poduzeće</p>
+                <p class="black">{{fullCmrData.company}}</p>
+              </td>
+            </tr>
+            <tr>
+              <td colspan="2">
+                <table class="sub-table-3">
+                  <tr>
+                    <td class="n-border-left">
+                      <p class="heading">22. Potpis i pečat pošiljatelja</p>
+                      <p class="black">{{fullCmrData.signatureSender}}</p>
+                    </td>
+                    <td>
+                      <p class="heading">23. Potpis i pečat prijevoznika</p>
+                      <p class="black">{{fullCmrData.signatureTransporter}}</p>
+                    </td>
+                    <td class="n-border-right">
+                      <p class="heading">24. Potpis i pečat primatelja</p>
+                      <p class="black">{{fullCmrData.signatureReciever}}</p>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+        <button type="submit" class="button-basic" (click)="generatePDF()">Spremi kao PDF</button>
+    </mat-card>
+  </div>
+</div>

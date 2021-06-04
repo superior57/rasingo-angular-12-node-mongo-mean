@@ -1,0 +1,46 @@
+<div class="footer">
+  <div class="container">
+    <div class="newsletter-container">
+      <div class="row justify-content-center">
+        <p>Želiš li dobivat obavijesti za novosti u logistici i transportu kao i atraktivne prilike? Pretplati se na newslettrer.</p>
+      </div>
+      <form [formGroup]="newsletterForm" (submit)="onAddEmail()" *ngIf="!isLoading">
+        <div class="form-group">
+          <div class="container">
+            <div class="row justify-content-center">
+              <input formControlName="email" type="text" placeholder="Email" class="form-control email-input">
+            </div>
+            <div class="row justify-content-center">
+              <div class="error" *ngIf="submitted && newsletterForm.controls.email.errors?.required">Email is required</div>
+              <div class="error" *ngIf="submitted && newsletterForm.controls.email.errors?.email">Email not valid</div>
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="row justify-content-center">
+            <button type="submit" *ngIf="!isLoading" class="button-submit">Go</button>
+          </div>
+        </div>
+      </form>
+    </div>
+    <div class="row justify-content-center">
+      <ul class="navi-footer">
+        <li><a href="#" routerLink="/about">O nama</a></li>
+        <li><a href="#" routerLink="/career">Karijera</a></li>
+        <li><a href="#" routerLink="/contact">Kontakt</a></li>
+        <li><a href="#" routerLink="/impressum">Impressum</a></li>
+        <li><a href="#">Uvjeti i odredbe</a></li>
+        <li><a href="#">Zaštita privatnosti</a></li>
+      </ul>
+    </div>
+    <div class="row justify-content-center">
+      <ul class="navi-social">
+        <li><a class="fb" href="#">Facebook</a></li>
+        <li><a class="li" href="#">LinkedIn</a></li>
+        <li><a class="viber" href="#">Viber</a></li>
+        <li><a class="rss" href="#">RSS</a></li>
+      </ul>
+    </div>
+  </div>
+</div>
+

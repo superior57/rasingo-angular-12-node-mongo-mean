@@ -1,0 +1,33 @@
+<div class="container-fluid pages">
+  <div class="container header-add-pages">
+    <h1>Dobro došli na Rasingo, suvremeni logistički asistent.</h1>
+  </div>
+  <div class="container cont-pages">
+    <mat-card>
+      <mat-spinner *ngIf="isLoading"></mat-spinner>
+        <mat-vertical-stepper #stepper selectedIndex="0">
+          <mat-step label="Quick info">
+            <form [formGroup]="signupForm" (ngSubmit)="onSignup()" *ngIf="!isLoading">
+              <div class="form-group">
+                <input name="email" type="email" formControlName="email" placeholder="E-Mail" class="form-control">
+                <div class="error" *ngIf="submitted && signupForm.controls.email.errors?.required">Email is required</div>
+                <div class="error" *ngIf="submitted && signupForm.controls.email.errors?.email">Email is not valid</div>
+              </div>
+              <div class="form-group">
+                <input type="password" name="password" formControlName="password" placeholder="Password" class="form-control">
+                <div class="error" *ngIf="submitted && signupForm.controls.password.errors?.required">Password is required</div>
+              </div>
+              <div class="form-group">
+                <input type="password" name="confirmPassword" formControlName="confirmPassword" placeholder="Confirm password" class="form-control" pattern={{f.password.value}}>
+                <div class="error" *ngIf="submitted && signupForm.controls.confirmPassword.errors?.required">Confirm password is required</div>
+                <div class="error" *ngIf="submitted && signupForm.controls.confirmPassword.errors?.pattern">Password and Confirm password doesn't match</div>
+              </div>
+              <button type="submit" *ngIf="!isLoading" class="button-submit">GO</button>
+            </form>
+        </mat-step>
+        <mat-step label="Company info"></mat-step>
+        <mat-step label="Upload documents"></mat-step>
+      </mat-vertical-stepper>
+    </mat-card>
+  </div>
+</div>

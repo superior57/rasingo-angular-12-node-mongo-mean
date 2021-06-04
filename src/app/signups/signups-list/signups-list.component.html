@@ -1,0 +1,119 @@
+<div class="container-fluid pages">
+  <div class="container header-add-pages">
+    <h1>Moje aktivne prijave</h1>
+  </div>
+  <div class="container cont-pages">
+    <mat-card>
+      <mat-spinner *ngIf="isLoading"></mat-spinner>
+      <p *ngIf="signups.length == 0 && !isLoading">Trenutno nemate aktivnih prijava</p>
+      <div class="container-lg my-3" *ngIf="signups.length > 0">
+        <div id="myCarousel" class="carousel slide" data-interval="false">
+          <div class="carousel-inner">
+            <div class="cargo-container">
+              <div class="carousel-item stage" *ngFor="let signup of signups; let i=index" alt="{{i+1}} slide" [ngClass]="{'active': i === 0}">
+                <mat-horizontal-stepper #stepper [selectedIndex]="signup.approved == false ? 1:2">
+                  <mat-step label="Odabir tereta"></mat-step>
+                  <mat-step label="Obrada ponude">
+                    <div class="row justify-content-center">
+                      <div class="icon-wrapper spinner">
+                        <div class="icon icon-cargo-{{signup.cargo[0].cargoType}}" [ngClass]="{'approved': signup.approved === true}">
+                          <div class="info-1">
+                            <span>{{signup.cargo[0].price}}&nbsp;EUR/km</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="row justify-content-center">
+                      <div class="route">
+                        <span>{{signup._id}}</span><br>
+                      </div>
+                    </div>
+                    <div class="row justify-content-center">
+                      <div class="info-2">
+                        <span><b>Vrsta tereta:</b> &nbsp;</span>
+                        <span *ngIf="signup.cargo[0].cargoType == 'adr'">ADR</span>
+                        <span *ngIf="signup.cargo[0].cargoType == 'refrigerated'">hlađena/smerznuta roba</span>
+                        <span *ngIf="signup.cargo[0].cargoType == 'ind_liq'">industrijske tekućine</span>
+                        <span *ngIf="signup.cargo[0].cargoType == 'food_liq'">prehrambene tekućine</span>
+                        <span *ngIf="signup.cargo[0].cargoType == 'ind_bulk'">industrijski rasuti teret</span>
+                        <span *ngIf="signup.cargo[0].cargoType == 'food_bulk'">prehrambeni rasuti teret</span>
+                        <span *ngIf="signup.cargo[0].cargoType == 'special'">izvanredni teret</span>
+                        <span *ngIf="signup.cargo[0].cargoType == 'container'">kontejner</span>
+                        <span *ngIf="signup.cargo[0].cargoType == 'not_palletized'">ne paletriana roba</span>
+                        <span *ngIf="signup.cargo[0].cargoType == 'palletized'">paletirana roba</span>
+                        <span *ngIf="signup.cargo[0].cargoType == 'vehicles'">vozila</span>
+                        <span *ngIf="signup.cargo[0].cargoType == 'special_lengths'">roba posebnih dužina</span>
+                        <span *ngIf="signup.cargo[0].cargoType == 'special_heights'">roba posebnih visina</span>
+                        <span *ngIf="signup.cargo[0].cargoType == 'large_dimensions'">roba velikih dimenzija</span>
+                        <span *ngIf="signup.cargo[0].cargoType == 'hang'">viseći teret</span>
+                        <span *ngIf="signup.cargo[0].cargoType == 'animals'">životinje</span>
+                        <span *ngIf="signup.cargo[0].cargoType == 'other'">ostalo</span>
+                        </div>
+                    </div>
+                    <div class="row justify-content-center">
+                      <div class="info-2">
+                        <span><b>Vozilo prijevoza:</b>&nbsp;{{signup.truck[0].regNumber}}</span>
+                      </div>
+                    </div>
+                  </mat-step>
+                  <mat-step label="Informacije">
+                    <div class="row justify-content-center">
+                      <div class="icon-wrapper spinner animation-stop">
+                        <div class="icon icon-cargo-{{signup.cargo[0].cargoType}} approved">
+                          <div class="info-1">
+                            <span>{{signup.cargo[0].price}}&nbsp;EUR/km</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="row justify-content-center">
+                      <p>Odlične vijesti!<br>Vaša ponuda je prihvaćena</p>
+                    </div>
+                    <div class="row justify-content-center">
+                      <div class="route">
+                        <span>{{signup._id}}</span><br>
+                      </div>
+                    </div>
+                    <div class="row justify-content-center">
+                      <div class="info-2">
+                        <span><b>Vrsta tereta:</b> &nbsp;</span>
+                        <span *ngIf="signup.cargo[0].cargoType == 'adr'">ADR</span>
+                        <span *ngIf="signup.cargo[0].cargoType == 'refrigerated'">hlađena/smerznuta roba</span>
+                        <span *ngIf="signup.cargo[0].cargoType == 'ind_liq'">industrijske tekućine</span>
+                        <span *ngIf="signup.cargo[0].cargoType == 'food_liq'">prehrambene tekućine</span>
+                        <span *ngIf="signup.cargo[0].cargoType == 'ind_bulk'">industrijski rasuti teret</span>
+                        <span *ngIf="signup.cargo[0].cargoType == 'food_bulk'">prehrambeni rasuti teret</span>
+                        <span *ngIf="signup.cargo[0].cargoType == 'special'">izvanredni teret</span>
+                        <span *ngIf="signup.cargo[0].cargoType == 'container'">kontejner</span>
+                        <span *ngIf="signup.cargo[0].cargoType == 'not_palletized'">ne paletriana roba</span>
+                        <span *ngIf="signup.cargo[0].cargoType == 'palletized'">paletirana roba</span>
+                        <span *ngIf="signup.cargo[0].cargoType == 'vehicles'">vozila</span>
+                        <span *ngIf="signup.cargo[0].cargoType == 'special_lengths'">roba posebnih dužina</span>
+                        <span *ngIf="signup.cargo[0].cargoType == 'special_heights'">roba posebnih visina</span>
+                        <span *ngIf="signup.cargo[0].cargoType == 'large_dimensions'">roba velikih dimenzija</span>
+                        <span *ngIf="signup.cargo[0].cargoType == 'hang'">viseći teret</span>
+                        <span *ngIf="signup.cargo[0].cargoType == 'animals'">životinje</span>
+                        <span *ngIf="signup.cargo[0].cargoType == 'other'">ostalo</span>
+                        </div>
+                    </div>
+                    <div class="row justify-content-center">
+                      <div class="info-2">
+                        <span><b>Vozilo prijevoza:</b>&nbsp;{{signup.truck[0].regNumber}}</span>
+                      </div>
+                    </div>
+                  </mat-step>
+                </mat-horizontal-stepper>
+              </div>
+            </div>
+          </div>
+          <a class="carousel-control-prev" href="#myCarousel" data-slide="prev">
+              <span class="carousel-control-prev-icon"></span>
+          </a>
+          <a class="carousel-control-next" href="#myCarousel" data-slide="next">
+              <span class="carousel-control-next-icon"></span>
+          </a>
+          </div>
+        </div>
+      </mat-card>
+  </div>
+</div>

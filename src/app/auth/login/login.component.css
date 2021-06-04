@@ -1,0 +1,16 @@
+
+mat-form-field {
+  width: 100%;
+}
+
+mat-spinner {
+  margin: auto;
+}
+
+.mat-card, .alert-success {
+  max-width: 30rem;
+}
+
+.alert-success {
+  margin: auto;
+}

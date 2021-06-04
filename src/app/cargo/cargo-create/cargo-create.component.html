@@ -1,0 +1,992 @@
+<div class="container-fluid pages">
+  <div class="container header-add-pages">
+    <h1>Kreiranje tereta</h1>
+  </div>
+  <div class="container cont-pages">
+    <mat-card>
+      <mat-spinner *ngIf="isLoading"></mat-spinner>
+      <div class="col-lg-12">
+        <div class="row">
+          <div class="col-lg-2">
+            <app-sidebar></app-sidebar>
+          </div>
+          <div class="col-lg-10">
+            <mat-vertical-stepper selectedIndex="0">
+              <mat-step label="Kreiranje tereta">
+                <div class="col-lg-12">
+                  <div class="row">
+                    <div class="col-lg-4">
+                      <div class="form-group">
+                        <select [(ngModel)]="cargoTypeSelected" class="form-control">
+                          <option value="" disabled selected hidden>Vrsta robe</option>
+                          <option value='adr'>ADR</option>
+                          <option value='refrigerated'>Hlađena/smrznuta roba</option>
+                          <option value='ind_liq'>Industrijske tekućine</option>
+                          <option value='food_liq'>Prehrambene tekućine</option>
+                          <option value='ind_bulk'>Industrijski rasuti teret</option>
+                          <option value='food_bulk'>Prehrambeni rasuti teret</option>
+                          <option value='special'>Izvanredni teret</option>
+                          <option value='container'>Kontejner</option>
+                          <option value='not_palletized'>Ne paletirana roba</option>
+                          <option value='palletized'>Paletriana roba</option>
+                          <option value='vehicles'>Vozila</option>
+                          <option value='special_lengths'>Roba posebnih dužina</option>
+                          <option value='special_heights'>Roba posebnih visina</option>
+                          <option value='large_dimensions'>Roba velikih dimenzija</option>
+                          <option value='hang'>Viseći teret</option>
+                          <option value='animals'>Životinje</option>
+                          <option value="other">Ostalo</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <!--ADR Form-->
+                <form *ngIf="cargoTypeSelected == 'adr' && !isLoading" [formGroup]="cargoForm" (submit)="onSaveCargo()">
+                  <div class="col-lg-12">
+                    <div class="row">
+                      <div class="col-lg-4">
+                        <div class="form-group">
+                          <input formControlName="weight" type="text" placeholder="Ukupni obujam/l" class="form-control small" maxlength="7">
+                          <div class="error" *ngIf="submitted && cargoForm.controls.weight.errors?.required">Weight is required</div>
+                          <div class="error" *ngIf="submitted && cargoForm.controls.weight.errors?.pattern">Numbers only. Example: 500</div>
+                        </div>
+                      </div>
+                      <div class="col-lg-4">
+                        <div class="form-group">
+                          <input maxlength="6" formControlName="price" type="text" placeholder="Ukupna cijena/EUR" class="form-control small">
+                          <div class="error" *ngIf="submitted && cargoForm.controls.price.errors?.required">Price is required</div>
+                          <div class="error" *ngIf="submitted && cargoForm.controls.price.errors?.pattern">Numbers only. Example: 1200</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <div class="col-lg-12" formArrayName="loads">
+                      <p>Kreirajte mjesta utovara</p>
+                      <div class="col-lg-12">
+                        <button type="button" (click)="addLoad()" class="btn button-small">+</button>
+                        <div class="error-center" *ngIf="submitted && cargoForm.controls.loads.errors?.plusNotValid">Load is required</div>
+                      </div>
+                      <div class="col-lg-12" *ngFor="let load of loads().controls; let i=index" [formGroupName]="i">
+                        <div class="row"><p>Mjesto utovara {{i + 1}}</p></div>
+                        <div class="row">
+                          <div class="col-lg-4">
+                            <input type="text" formControlName="loadAddress" class="form-control" placeholder="Adresa">
+                            <div class="error" *ngIf="submitted && added && load.controls.loadAddress.errors?.required">Address is required</div>
+                          </div>
+                          <div class="col-lg-4">
+                            <input type="text" formControlName="loadCity" class="form-control" placeholder="Grad/Mjesto">
+                            <div class="error" *ngIf="submitted && added && load.controls.loadCity.errors?.required">City is required</div>
+                          </div>
+                          <div class="col-lg-4">
+                            <select formControlName="loadCountry" class="form-control">
+                              <option value="" disabled selected hidden>Country</option>
+                              <option *ngFor="let country of countries" value="{{country.name}}">{{country.name}}</option>
+                            </select>
+                            <div class="error" *ngIf="submitted && added && load.controls.loadCountry.errors?.required">County is required</div>
+                          </div>
+                        </div>
+                        <div class="row mt-1">
+                          <div class="col-lg-4">
+                            <input type="text"
+                            placeholder="Datum utovara"
+                            class="form-control date-to-time-margin"
+                            bsDatepicker
+                            formControlName="loadDate"
+                            >
+                            <div class="error" *ngIf="submitted && added && load.controls.loadDate.errors?.required">Date is required</div>
+                          </div>
+                          <div class="col-lg-4">
+                            <timepicker formControlName="loadTime"></timepicker>
+                            <div class="error" *ngIf="submitted && added && load.controls.loadTime.errors?.required">Time is required</div>
+                          </div>
+                        </div>
+                        <div class="row">
+                          <div class="col-lg-12">
+                            <button (click)="removeLoad(i)" class="btn">Remove</button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <div class="col-lg-12" formArrayName="unLoads">
+                      <p>Kreirajte mjesta istovara</p>
+                      <div class="col-lg-12">
+                        <button type="button" (click)="addUnLoad()" class="btn button-small">+</button>
+                        <div class="error-center" *ngIf="submitted && cargoForm.controls.unLoads.errors?.plusNotValid">UnLoad is required</div>
+                      </div>
+                      <div class="col-lg-12" *ngFor="let unLoad of unLoads().controls; let i=index" [formGroupName]="i">
+                        <div class="row"><p>Mjesto istovara {{i + 1}}</p></div>
+                        <div class="row">
+                          <div class="col-lg-4">
+                            <input type="text" formControlName="unLoadAddress" class="form-control" placeholder="Adresa">
+                            <div class="error" *ngIf="submitted && added && unLoad.controls.unLoadAddress.errors?.required">Address is required</div>
+                          </div>
+                          <div class="col-lg-4">
+                            <input type="text" formControlName="unLoadCity" class="form-control" placeholder="Grad/Mjesto">
+                            <div class="error" *ngIf="submitted && added && unLoad.controls.unLoadCity.errors?.required">Weight is required</div>
+                          </div>
+                          <div class="col-lg-4">
+                            <select formControlName="unLoadCountry" class="form-control">
+                              <option value="" disabled selected hidden>Country</option>
+                              <option *ngFor="let country of countries" value="{{country.name}}">{{country.name}}</option>
+                            </select>
+                            <div class="error" *ngIf="submitted && added && unLoad.controls.unLoadCountry.errors?.required">Weight is required</div>
+                          </div>
+                        </div>
+                        <div class="row">
+                          <div class="col-lg-4">
+                            <input type="text"
+                            placeholder="Datepicker"
+                            class="form-control date-to-time-margin"
+                            bsDatepicker
+                            formControlName="unLoadDate"
+                            >
+                            <div class="error" *ngIf="submitted && added && unLoad.controls.unLoadDate.errors?.required">Date is required</div>
+                          </div>
+                          <div class="col-lg-4">
+                            <timepicker formControlName="unLoadTime"></timepicker>
+                            <div class="error" *ngIf="submitted && added && unLoad.controls.unLoadTime.errors?.required">Time is required</div>
+                          </div>
+                        </div>
+                        <div class="row">
+                          <div class="col-lg-12">
+                            <button (click)="removeUnLoad(i)" class="btn">Remove</button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-lg-12">
+                    <div class="row">
+                      <div class="col-lg-12">
+                        <div class="form-group">
+                          <textarea maxlength="200" rows="4" formControlName="description" placeholder="Napomena" class="form-control"></textarea>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <button type="submit" *ngIf="!isLoading" class="button-submit">Go</button>
+                  </div>
+                </form>
+                <!--Ind liq Form-->
+                <form *ngIf="cargoTypeSelected == 'ind_liq' && !isLoading" [formGroup]="cargoForm" (submit)="onSaveCargo()">
+                  <div class="col-lg-12">
+                    <div class="row">
+                      <div class="col-lg-4">
+                        <div class="form-group">
+                          <input formControlName="weight" type="text" placeholder="Ukupni obujam/l" class="form-control small" maxlength="7">
+                          <div class="error" *ngIf="submitted && cargoForm.controls.weight.errors?.required">Weight is required</div>
+                          <div class="error" *ngIf="submitted && cargoForm.controls.weight.errors?.pattern">Numbers only. Example: 500</div>
+                        </div>
+                      </div>
+                      <div class="col-lg-4">
+                        <div class="form-group">
+                          <input maxlength="6" formControlName="price" type="text" placeholder="Ukupna cijena/EUR" class="form-control small">
+                          <div class="error" *ngIf="submitted && cargoForm.controls.price.errors?.required">Price is required</div>
+                          <div class="error" *ngIf="submitted && cargoForm.controls.price.errors?.pattern">Numbers only. Example: 1200</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <div class="col-lg-12" formArrayName="loads">
+                      <p>Kreirajte mjesta utovara</p>
+                      <div class="col-lg-12">
+                        <button type="button" (click)="addLoad()" class="btn button-small">+</button>
+                        <div class="error-center" *ngIf="submitted && cargoForm.controls.loads.errors?.plusNotValid">Load is required</div>
+                      </div>
+                      <div class="col-lg-12" *ngFor="let load of loads().controls; let i=index" [formGroupName]="i">
+                        <div class="row"><p>Mjesto utovara {{i + 1}}</p></div>
+                        <div class="row">
+                          <div class="col-lg-4">
+                            <input type="text" formControlName="loadAddress" class="form-control" placeholder="Adresa">
+                            <div class="error" *ngIf="submitted && added && load.controls.loadAddress.errors?.required">Address is required</div>
+                          </div>
+                          <div class="col-lg-4">
+                            <input type="text" formControlName="loadCity" class="form-control" placeholder="Grad/Mjesto">
+                            <div class="error" *ngIf="submitted && added && load.controls.loadCity.errors?.required">City is required</div>
+                          </div>
+                          <div class="col-lg-4">
+                            <select formControlName="loadCountry" class="form-control">
+                              <option value="" disabled selected hidden>Country</option>
+                              <option *ngFor="let country of countries" value="{{country.name}}">{{country.name}}</option>
+                            </select>
+                            <div class="error" *ngIf="submitted && added && load.controls.loadCountry.errors?.required">County is required</div>
+                          </div>
+                        </div>
+                        <div class="row mt-1">
+                          <div class="col-lg-4">
+                            <input type="text"
+                            placeholder="Datum utovara"
+                            class="form-control date-to-time-margin"
+                            bsDatepicker
+                            formControlName="loadDate"
+                            >
+                            <div class="error" *ngIf="submitted && added && load.controls.loadDate.errors?.required">Date is required</div>
+                          </div>
+                          <div class="col-lg-4">
+                            <timepicker formControlName="loadTime"></timepicker>
+                            <div class="error" *ngIf="submitted && added && load.controls.loadTime.errors?.required">Time is required</div>
+                          </div>
+                        </div>
+                        <div class="row">
+                          <div class="col-lg-12">
+                            <button (click)="removeLoad(i)" class="btn">Remove</button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <div class="col-lg-12" formArrayName="unLoads">
+                      <p>Kreirajte mjesta istovara</p>
+                      <div class="col-lg-12">
+                        <button type="button" (click)="addUnLoad()" class="btn button-small">+</button>
+                        <div class="error-center" *ngIf="submitted && cargoForm.controls.unLoads.errors?.plusNotValid">UnLoad is required</div>
+                      </div>
+                      <div class="col-lg-12" *ngFor="let unLoad of unLoads().controls; let i=index" [formGroupName]="i">
+                        <div class="row"><p>Mjesto istovara {{i + 1}}</p></div>
+                        <div class="row">
+                          <div class="col-lg-4">
+                            <input type="text" formControlName="unLoadAddress" class="form-control" placeholder="Adresa">
+                            <div class="error" *ngIf="submitted && added && unLoad.controls.unLoadAddress.errors?.required">Address is required</div>
+                          </div>
+                          <div class="col-lg-4">
+                            <input type="text" formControlName="unLoadCity" class="form-control" placeholder="Grad/Mjesto">
+                            <div class="error" *ngIf="submitted && added && unLoad.controls.unLoadCity.errors?.required">Weight is required</div>
+                          </div>
+                          <div class="col-lg-4">
+                            <select formControlName="unLoadCountry" class="form-control">
+                              <option value="" disabled selected hidden>Country</option>
+                              <option *ngFor="let country of countries" value="{{country.name}}">{{country.name}}</option>
+                            </select>
+                            <div class="error" *ngIf="submitted && added && unLoad.controls.unLoadCountry.errors?.required">Weight is required</div>
+                          </div>
+                        </div>
+                        <div class="row">
+                          <div class="col-lg-4">
+                            <input type="text"
+                            placeholder="Datepicker"
+                            class="form-control date-to-time-margin"
+                            bsDatepicker
+                            formControlName="unLoadDate"
+                            >
+                            <div class="error" *ngIf="submitted && added && unLoad.controls.unLoadDate.errors?.required">Date is required</div>
+                          </div>
+                          <div class="col-lg-4">
+                            <timepicker formControlName="unLoadTime"></timepicker>
+                            <div class="error" *ngIf="submitted && added && unLoad.controls.unLoadTime.errors?.required">Time is required</div>
+                          </div>
+                        </div>
+                        <div class="row">
+                          <div class="col-lg-12">
+                            <button (click)="removeUnLoad(i)" class="btn">Remove</button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-lg-12">
+                    <div class="row">
+                      <div class="col-lg-12">
+                        <div class="form-group">
+                          <textarea maxlength="200" rows="4" formControlName="description" placeholder="Napomena" class="form-control"></textarea>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <button type="submit" *ngIf="!isLoading" class="button-submit">Go</button>
+                  </div>
+                </form>
+                <!--Food liq Form-->
+                <form *ngIf="cargoTypeSelected == 'food_liq' && !isLoading" [formGroup]="cargoForm" (submit)="onSaveCargo()">
+                  <div class="col-lg-12">
+                    <div class="row">
+                      <div class="col-lg-4">
+                        <div class="form-group">
+                          <input formControlName="weight" type="text" placeholder="Ukupni obujam/l" class="form-control small" maxlength="7">
+                          <div class="error" *ngIf="submitted && cargoForm.controls.weight.errors?.required">Weight is required</div>
+                          <div class="error" *ngIf="submitted && cargoForm.controls.weight.errors?.pattern">Numbers only. Example: 500</div>
+                        </div>
+                      </div>
+                      <div class="col-lg-4">
+                        <div class="form-group">
+                          <input maxlength="6" formControlName="price" type="text" placeholder="Ukupna cijena/EUR" class="form-control small">
+                          <div class="error" *ngIf="submitted && cargoForm.controls.price.errors?.required">Price is required</div>
+                          <div class="error" *ngIf="submitted && cargoForm.controls.price.errors?.pattern">Numbers only. Example: 1200</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <div class="col-lg-12" formArrayName="loads">
+                      <p>Kreirajte mjesta utovara</p>
+                      <div class="col-lg-12">
+                        <button type="button" (click)="addLoad()" class="btn button-small">+</button>
+                        <div class="error-center" *ngIf="submitted && cargoForm.controls.loads.errors?.plusNotValid">Load is required</div>
+                      </div>
+                      <div class="col-lg-12" *ngFor="let load of loads().controls; let i=index" [formGroupName]="i">
+                        <div class="row"><p>Mjesto utovara {{i + 1}}</p></div>
+                        <div class="row">
+                          <div class="col-lg-4">
+                            <input type="text" formControlName="loadAddress" class="form-control" placeholder="Adresa">
+                            <div class="error" *ngIf="submitted && added && load.controls.loadAddress.errors?.required">Address is required</div>
+                          </div>
+                          <div class="col-lg-4">
+                            <input type="text" formControlName="loadCity" class="form-control" placeholder="Grad/Mjesto">
+                            <div class="error" *ngIf="submitted && added && load.controls.loadCity.errors?.required">City is required</div>
+                          </div>
+                          <div class="col-lg-4">
+                            <select formControlName="loadCountry" class="form-control">
+                              <option value="" disabled selected hidden>Country</option>
+                              <option *ngFor="let country of countries" value="{{country.name}}">{{country.name}}</option>
+                            </select>
+                            <div class="error" *ngIf="submitted && added && load.controls.loadCountry.errors?.required">County is required</div>
+                          </div>
+                        </div>
+                        <div class="row mt-1">
+                          <div class="col-lg-4">
+                            <input type="text"
+                            placeholder="Datum utovara"
+                            class="form-control date-to-time-margin"
+                            bsDatepicker
+                            formControlName="loadDate"
+                            >
+                            <div class="error" *ngIf="submitted && added && load.controls.loadDate.errors?.required">Date is required</div>
+                          </div>
+                          <div class="col-lg-4">
+                            <timepicker formControlName="loadTime"></timepicker>
+                            <div class="error" *ngIf="submitted && added && load.controls.loadTime.errors?.required">Time is required</div>
+                          </div>
+                        </div>
+                        <div class="row">
+                          <div class="col-lg-12">
+                            <button (click)="removeLoad(i)" class="btn">Remove</button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <div class="col-lg-12" formArrayName="unLoads">
+                      <p>Kreirajte mjesta istovara</p>
+                      <div class="col-lg-12">
+                        <button type="button" (click)="addUnLoad()" class="btn button-small">+</button>
+                        <div class="error-center" *ngIf="submitted && cargoForm.controls.unLoads.errors?.plusNotValid">UnLoad is required</div>
+                      </div>
+                      <div class="col-lg-12" *ngFor="let unLoad of unLoads().controls; let i=index" [formGroupName]="i">
+                        <div class="row"><p>Mjesto istovara {{i + 1}}</p></div>
+                        <div class="row">
+                          <div class="col-lg-4">
+                            <input type="text" formControlName="unLoadAddress" class="form-control" placeholder="Adresa">
+                            <div class="error" *ngIf="submitted && added && unLoad.controls.unLoadAddress.errors?.required">Address is required</div>
+                          </div>
+                          <div class="col-lg-4">
+                            <input type="text" formControlName="unLoadCity" class="form-control" placeholder="Grad/Mjesto">
+                            <div class="error" *ngIf="submitted && added && unLoad.controls.unLoadCity.errors?.required">Weight is required</div>
+                          </div>
+                          <div class="col-lg-4">
+                            <select formControlName="unLoadCountry" class="form-control">
+                              <option value="" disabled selected hidden>Country</option>
+                              <option *ngFor="let country of countries" value="{{country.name}}">{{country.name}}</option>
+                            </select>
+                            <div class="error" *ngIf="submitted && added && unLoad.controls.unLoadCountry.errors?.required">Weight is required</div>
+                          </div>
+                        </div>
+                        <div class="row">
+                          <div class="col-lg-4">
+                            <input type="text"
+                            placeholder="Datepicker"
+                            class="form-control date-to-time-margin"
+                            bsDatepicker
+                            formControlName="unLoadDate"
+                            >
+                            <div class="error" *ngIf="submitted && added && unLoad.controls.unLoadDate.errors?.required">Date is required</div>
+                          </div>
+                          <div class="col-lg-4">
+                            <timepicker formControlName="unLoadTime"></timepicker>
+                            <div class="error" *ngIf="submitted && added && unLoad.controls.unLoadTime.errors?.required">Time is required</div>
+                          </div>
+                        </div>
+                        <div class="row">
+                          <div class="col-lg-12">
+                            <button (click)="removeUnLoad(i)" class="btn">Remove</button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-lg-12">
+                    <div class="row">
+                      <div class="col-lg-12">
+                        <div class="form-group">
+                          <textarea maxlength="200" rows="4" formControlName="description" placeholder="Napomena" class="form-control"></textarea>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <button type="submit" *ngIf="!isLoading" class="button-submit">Go</button>
+                  </div>
+                </form>
+                <!--Ind bulk Form-->
+                <form *ngIf="cargoTypeSelected == 'ind_bulk' && !isLoading" [formGroup]="cargoForm" (submit)="onSaveCargo()">
+                  <div class="col-lg-12">
+                    <div class="row">
+                      <div class="col-lg-4">
+                        <div class="form-group">
+                          <input formControlName="weight" type="text" placeholder="Ukupna težina/kg" class="form-control small" maxlength="7">
+                          <div class="error" *ngIf="submitted && cargoForm.controls.weight.errors?.required">Weight is required</div>
+                          <div class="error" *ngIf="submitted && cargoForm.controls.weight.errors?.pattern">Numbers only. Example: 500</div>
+                        </div>
+                      </div>
+                      <div class="col-lg-4">
+                        <div class="form-group">
+                          <input maxlength="6" formControlName="price" type="text" placeholder="Ukupna cijena/EUR" class="form-control small">
+                          <div class="error" *ngIf="submitted && cargoForm.controls.price.errors?.required">Price is required</div>
+                          <div class="error" *ngIf="submitted && cargoForm.controls.price.errors?.pattern">Numbers only. Example: 1200</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <div class="col-lg-12" formArrayName="loads">
+                      <p>Kreirajte mjesta utovara</p>
+                      <div class="col-lg-12">
+                        <button type="button" (click)="addLoad()" class="btn button-small">+</button>
+                        <div class="error-center" *ngIf="submitted && cargoForm.controls.loads.errors?.plusNotValid">Load is required</div>
+                      </div>
+                      <div class="col-lg-12" *ngFor="let load of loads().controls; let i=index" [formGroupName]="i">
+                        <div class="row"><p>Mjesto utovara {{i + 1}}</p></div>
+                        <div class="row">
+                          <div class="col-lg-4">
+                            <input type="text" formControlName="loadAddress" class="form-control" placeholder="Adresa">
+                            <div class="error" *ngIf="submitted && added && load.controls.loadAddress.errors?.required">Address is required</div>
+                          </div>
+                          <div class="col-lg-4">
+                            <input type="text" formControlName="loadCity" class="form-control" placeholder="Grad/Mjesto">
+                            <div class="error" *ngIf="submitted && added && load.controls.loadCity.errors?.required">City is required</div>
+                          </div>
+                          <div class="col-lg-4">
+                            <select formControlName="loadCountry" class="form-control">
+                              <option value="" disabled selected hidden>Country</option>
+                              <option *ngFor="let country of countries" value="{{country.name}}">{{country.name}}</option>
+                            </select>
+                            <div class="error" *ngIf="submitted && added && load.controls.loadCountry.errors?.required">County is required</div>
+                          </div>
+                        </div>
+                        <div class="row mt-1">
+                          <div class="col-lg-4">
+                            <input type="text"
+                            placeholder="Datum utovara"
+                            class="form-control date-to-time-margin"
+                            bsDatepicker
+                            formControlName="loadDate"
+                            >
+                            <div class="error" *ngIf="submitted && added && load.controls.loadDate.errors?.required">Date is required</div>
+                          </div>
+                          <div class="col-lg-4">
+                            <timepicker formControlName="loadTime"></timepicker>
+                            <div class="error" *ngIf="submitted && added && load.controls.loadTime.errors?.required">Time is required</div>
+                          </div>
+                        </div>
+                        <div class="row">
+                          <div class="col-lg-12">
+                            <button (click)="removeLoad(i)" class="btn">Remove</button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <div class="col-lg-12" formArrayName="unLoads">
+                      <p>Kreirajte mjesta istovara</p>
+                      <div class="col-lg-12">
+                        <button type="button" (click)="addUnLoad()" class="btn button-small">+</button>
+                        <div class="error-center" *ngIf="submitted && cargoForm.controls.unLoads.errors?.plusNotValid">UnLoad is required</div>
+                      </div>
+                      <div class="col-lg-12" *ngFor="let unLoad of unLoads().controls; let i=index" [formGroupName]="i">
+                        <div class="row"><p>Mjesto istovara {{i + 1}}</p></div>
+                        <div class="row">
+                          <div class="col-lg-4">
+                            <input type="text" formControlName="unLoadAddress" class="form-control" placeholder="Adresa">
+                            <div class="error" *ngIf="submitted && added && unLoad.controls.unLoadAddress.errors?.required">Address is required</div>
+                          </div>
+                          <div class="col-lg-4">
+                            <input type="text" formControlName="unLoadCity" class="form-control" placeholder="Grad/Mjesto">
+                            <div class="error" *ngIf="submitted && added && unLoad.controls.unLoadCity.errors?.required">Weight is required</div>
+                          </div>
+                          <div class="col-lg-4">
+                            <select formControlName="unLoadCountry" class="form-control">
+                              <option value="" disabled selected hidden>Country</option>
+                              <option *ngFor="let country of countries" value="{{country.name}}">{{country.name}}</option>
+                            </select>
+                            <div class="error" *ngIf="submitted && added && unLoad.controls.unLoadCountry.errors?.required">Weight is required</div>
+                          </div>
+                        </div>
+                        <div class="row">
+                          <div class="col-lg-4">
+                            <input type="text"
+                            placeholder="Datepicker"
+                            class="form-control date-to-time-margin"
+                            bsDatepicker
+                            formControlName="unLoadDate"
+                            >
+                            <div class="error" *ngIf="submitted && added && unLoad.controls.unLoadDate.errors?.required">Date is required</div>
+                          </div>
+                          <div class="col-lg-4">
+                            <timepicker formControlName="unLoadTime"></timepicker>
+                            <div class="error" *ngIf="submitted && added && unLoad.controls.unLoadTime.errors?.required">Time is required</div>
+                          </div>
+                        </div>
+                        <div class="row">
+                          <div class="col-lg-12">
+                            <button (click)="removeUnLoad(i)" class="btn">Remove</button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-lg-12">
+                    <div class="row">
+                      <div class="col-lg-12">
+                        <div class="form-group">
+                          <textarea maxlength="200" rows="4" formControlName="description" placeholder="Napomena" class="form-control"></textarea>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <button type="submit" *ngIf="!isLoading" class="button-submit">Go</button>
+                  </div>
+                </form>
+                <!--Food bulk Form-->
+                <form *ngIf="cargoTypeSelected == 'food_bulk' && !isLoading" [formGroup]="cargoForm" (submit)="onSaveCargo()">
+                  <div class="col-lg-12">
+                    <div class="row">
+                      <div class="col-lg-4">
+                        <div class="form-group">
+                          <input formControlName="weight" type="text" placeholder="Ukupna težina/kg" class="form-control small" maxlength="7">
+                          <div class="error" *ngIf="submitted && cargoForm.controls.weight.errors?.required">Weight is required</div>
+                          <div class="error" *ngIf="submitted && cargoForm.controls.weight.errors?.pattern">Numbers only. Example: 500</div>
+                        </div>
+                      </div>
+                      <div class="col-lg-4">
+                        <div class="form-group">
+                          <input maxlength="6" formControlName="price" type="text" placeholder="Ukupna cijena/EUR" class="form-control small">
+                          <div class="error" *ngIf="submitted && cargoForm.controls.price.errors?.required">Price is required</div>
+                          <div class="error" *ngIf="submitted && cargoForm.controls.price.errors?.pattern">Numbers only. Example: 1200</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <div class="col-lg-12" formArrayName="loads">
+                      <p>Kreirajte mjesta utovara</p>
+                      <div class="col-lg-12">
+                        <button type="button" (click)="addLoad()" class="btn button-small">+</button>
+                        <div class="error-center" *ngIf="submitted && cargoForm.controls.loads.errors?.plusNotValid">Load is required</div>
+                      </div>
+                      <div class="col-lg-12" *ngFor="let load of loads().controls; let i=index" [formGroupName]="i">
+                        <div class="row"><p>Mjesto utovara {{i + 1}}</p></div>
+                        <div class="row">
+                          <div class="col-lg-4">
+                            <input type="text" formControlName="loadAddress" class="form-control" placeholder="Adresa">
+                            <div class="error" *ngIf="submitted && added && load.controls.loadAddress.errors?.required">Address is required</div>
+                          </div>
+                          <div class="col-lg-4">
+                            <input type="text" formControlName="loadCity" class="form-control" placeholder="Grad/Mjesto">
+                            <div class="error" *ngIf="submitted && added && load.controls.loadCity.errors?.required">City is required</div>
+                          </div>
+                          <div class="col-lg-4">
+                            <select formControlName="loadCountry" class="form-control">
+                              <option value="" disabled selected hidden>Country</option>
+                              <option *ngFor="let country of countries" value="{{country.name}}">{{country.name}}</option>
+                            </select>
+                            <div class="error" *ngIf="submitted && added && load.controls.loadCountry.errors?.required">County is required</div>
+                          </div>
+                        </div>
+                        <div class="row mt-1">
+                          <div class="col-lg-4">
+                            <input type="text"
+                            placeholder="Datum utovara"
+                            class="form-control date-to-time-margin"
+                            bsDatepicker
+                            formControlName="loadDate"
+                            >
+                            <div class="error" *ngIf="submitted && added && load.controls.loadDate.errors?.required">Date is required</div>
+                          </div>
+                          <div class="col-lg-4">
+                            <timepicker formControlName="loadTime"></timepicker>
+                            <div class="error" *ngIf="submitted && added && load.controls.loadTime.errors?.required">Time is required</div>
+                          </div>
+                        </div>
+                        <div class="row">
+                          <div class="col-lg-12">
+                            <button (click)="removeLoad(i)" class="btn">Remove</button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <div class="col-lg-12" formArrayName="unLoads">
+                      <p>Kreirajte mjesta istovara</p>
+                      <div class="col-lg-12">
+                        <button type="button" (click)="addUnLoad()" class="btn button-small">+</button>
+                        <div class="error-center" *ngIf="submitted && cargoForm.controls.unLoads.errors?.plusNotValid">UnLoad is required</div>
+                      </div>
+                      <div class="col-lg-12" *ngFor="let unLoad of unLoads().controls; let i=index" [formGroupName]="i">
+                        <div class="row"><p>Mjesto istovara {{i + 1}}</p></div>
+                        <div class="row">
+                          <div class="col-lg-4">
+                            <input type="text" formControlName="unLoadAddress" class="form-control" placeholder="Adresa">
+                            <div class="error" *ngIf="submitted && added && unLoad.controls.unLoadAddress.errors?.required">Address is required</div>
+                          </div>
+                          <div class="col-lg-4">
+                            <input type="text" formControlName="unLoadCity" class="form-control" placeholder="Grad/Mjesto">
+                            <div class="error" *ngIf="submitted && added && unLoad.controls.unLoadCity.errors?.required">Weight is required</div>
+                          </div>
+                          <div class="col-lg-4">
+                            <select formControlName="unLoadCountry" class="form-control">
+                              <option value="" disabled selected hidden>Country</option>
+                              <option *ngFor="let country of countries" value="{{country.name}}">{{country.name}}</option>
+                            </select>
+                            <div class="error" *ngIf="submitted && added && unLoad.controls.unLoadCountry.errors?.required">Weight is required</div>
+                          </div>
+                        </div>
+                        <div class="row">
+                          <div class="col-lg-4">
+                            <input type="text"
+                            placeholder="Datepicker"
+                            class="form-control date-to-time-margin"
+                            bsDatepicker
+                            formControlName="unLoadDate"
+                            >
+                            <div class="error" *ngIf="submitted && added && unLoad.controls.unLoadDate.errors?.required">Date is required</div>
+                          </div>
+                          <div class="col-lg-4">
+                            <timepicker formControlName="unLoadTime"></timepicker>
+                            <div class="error" *ngIf="submitted && added && unLoad.controls.unLoadTime.errors?.required">Time is required</div>
+                          </div>
+                        </div>
+                        <div class="row">
+                          <div class="col-lg-12">
+                            <button (click)="removeUnLoad(i)" class="btn">Remove</button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-lg-12">
+                    <div class="row">
+                      <div class="col-lg-12">
+                        <div class="form-group">
+                          <textarea maxlength="200" rows="4" formControlName="description" placeholder="Napomena" class="form-control"></textarea>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <button type="submit" *ngIf="!isLoading" class="button-submit">Go</button>
+                  </div>
+                </form>
+                <!--Animals Form-->
+                <form *ngIf="cargoTypeSelected == 'animals' && !isLoading" [formGroup]="cargoForm" (submit)="onSaveCargo()">
+                  <div class="col-lg-12">
+                    <div class="row">
+                      <div class="col-lg-4">
+                        <div class="form-group">
+                          <input formControlName="weight" type="text" placeholder="Ukupna težina/kg" class="form-control small" maxlength="7">
+                          <div class="error" *ngIf="submitted && cargoForm.controls.weight.errors?.required">Weight is required</div>
+                          <div class="error" *ngIf="submitted && cargoForm.controls.weight.errors?.pattern">Numbers only. Example: 500</div>
+                        </div>
+                      </div>
+                      <div class="col-lg-4">
+                        <div class="form-group">
+                          <input maxlength="6" formControlName="price" type="text" placeholder="Ukupna cijena/EUR" class="form-control small">
+                          <div class="error" *ngIf="submitted && cargoForm.controls.price.errors?.required">Price is required</div>
+                          <div class="error" *ngIf="submitted && cargoForm.controls.price.errors?.pattern">Numbers only. Example: 1200</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <div class="col-lg-12" formArrayName="loads">
+                      <p>Kreirajte mjesta utovara</p>
+                      <div class="col-lg-12">
+                        <button type="button" (click)="addLoad()" class="btn button-small">+</button>
+                        <div class="error-center" *ngIf="submitted && cargoForm.controls.loads.errors?.plusNotValid">Load is required</div>
+                      </div>
+                      <div class="col-lg-12" *ngFor="let load of loads().controls; let i=index" [formGroupName]="i">
+                        <div class="row"><p>Mjesto utovara {{i + 1}}</p></div>
+                        <div class="row">
+                          <div class="col-lg-4">
+                            <input type="text" formControlName="loadAddress" class="form-control" placeholder="Adresa">
+                            <div class="error" *ngIf="submitted && added && load.controls.loadAddress.errors?.required">Address is required</div>
+                          </div>
+                          <div class="col-lg-4">
+                            <input type="text" formControlName="loadCity" class="form-control" placeholder="Grad/Mjesto">
+                            <div class="error" *ngIf="submitted && added && load.controls.loadCity.errors?.required">City is required</div>
+                          </div>
+                          <div class="col-lg-4">
+                            <select formControlName="loadCountry" class="form-control">
+                              <option value="" disabled selected hidden>Country</option>
+                              <option *ngFor="let country of countries" value="{{country.name}}">{{country.name}}</option>
+                            </select>
+                            <div class="error" *ngIf="submitted && added && load.controls.loadCountry.errors?.required">County is required</div>
+                          </div>
+                        </div>
+                        <div class="row mt-1">
+                          <div class="col-lg-4">
+                            <input type="text"
+                            placeholder="Datum utovara"
+                            class="form-control date-to-time-margin"
+                            bsDatepicker
+                            formControlName="loadDate"
+                            >
+                            <div class="error" *ngIf="submitted && added && load.controls.loadDate.errors?.required">Date is required</div>
+                          </div>
+                          <div class="col-lg-4">
+                            <timepicker formControlName="loadTime"></timepicker>
+                            <div class="error" *ngIf="submitted && added && load.controls.loadTime.errors?.required">Time is required</div>
+                          </div>
+                        </div>
+                        <div class="row">
+                          <div class="col-lg-12">
+                            <button (click)="removeLoad(i)" class="btn">Remove</button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <div class="col-lg-12" formArrayName="unLoads">
+                      <p>Kreirajte mjesta istovara</p>
+                      <div class="col-lg-12">
+                        <button type="button" (click)="addUnLoad()" class="btn button-small">+</button>
+                        <div class="error-center" *ngIf="submitted && cargoForm.controls.unLoads.errors?.plusNotValid">UnLoad is required</div>
+                      </div>
+                      <div class="col-lg-12" *ngFor="let unLoad of unLoads().controls; let i=index" [formGroupName]="i">
+                        <div class="row"><p>Mjesto istovara {{i + 1}}</p></div>
+                        <div class="row">
+                          <div class="col-lg-4">
+                            <input type="text" formControlName="unLoadAddress" class="form-control" placeholder="Adresa">
+                            <div class="error" *ngIf="submitted && added && unLoad.controls.unLoadAddress.errors?.required">Address is required</div>
+                          </div>
+                          <div class="col-lg-4">
+                            <input type="text" formControlName="unLoadCity" class="form-control" placeholder="Grad/Mjesto">
+                            <div class="error" *ngIf="submitted && added && unLoad.controls.unLoadCity.errors?.required">Weight is required</div>
+                          </div>
+                          <div class="col-lg-4">
+                            <select formControlName="unLoadCountry" class="form-control">
+                              <option value="" disabled selected hidden>Country</option>
+                              <option *ngFor="let country of countries" value="{{country.name}}">{{country.name}}</option>
+                            </select>
+                            <div class="error" *ngIf="submitted && added && unLoad.controls.unLoadCountry.errors?.required">Weight is required</div>
+                          </div>
+                        </div>
+                        <div class="row">
+                          <div class="col-lg-4">
+                            <input type="text"
+                            placeholder="Datepicker"
+                            class="form-control date-to-time-margin"
+                            bsDatepicker
+                            formControlName="unLoadDate"
+                            >
+                            <div class="error" *ngIf="submitted && added && unLoad.controls.unLoadDate.errors?.required">Date is required</div>
+                          </div>
+                          <div class="col-lg-4">
+                            <timepicker formControlName="unLoadTime"></timepicker>
+                            <div class="error" *ngIf="submitted && added && unLoad.controls.unLoadTime.errors?.required">Time is required</div>
+                          </div>
+                        </div>
+                        <div class="row">
+                          <div class="col-lg-12">
+                            <button (click)="removeUnLoad(i)" class="btn">Remove</button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-lg-12">
+                    <div class="row">
+                      <div class="col-lg-12">
+                        <div class="form-group">
+                          <textarea maxlength="200" rows="4" formControlName="description" placeholder="Napomena" class="form-control"></textarea>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <button type="submit" *ngIf="!isLoading" class="button-submit">Go</button>
+                  </div>
+                </form>
+                <!--Container form-->
+                <form *ngIf="cargoTypeSelected == 'container' && !isLoading" [formGroup]="cargoForm" (submit)="onSaveContainerCargo()">
+                  <div class="col-lg-12">
+                    <div class="row">
+                      <div class="col-lg-3">
+                        <div class="form-group">
+                          <input formControlName="number" type="text" placeholder="Koliko kontejnera?" class="form-control small" maxlength="4">
+                          <div class="error" *ngIf="submitted && cargoForm.controls.number.errors?.required">Number is required</div>
+                        </div>
+                      </div>
+                      <div class="col-lg-3">
+                        <select formControlName="containerType" class="form-control">
+                          <option value="" disabled selected hidden>Vrsta kontejnera</option>
+                          <option value="standard_20">Standard 20</option>
+                          <option value="standard_40">Standard 40</option>
+                          <option value="high_cube_40">High Cube 40</option>
+                          <option value="open_top_20">Open top 20</option>
+                          <option value="open_top_40">Open top 40</option>
+                          <option value="frigo_20">Frigo 20</option>
+                          <option value="frigo_40">Frigo 40</option>
+                          <option value="flat_rack_20">Flat rack 20</option>
+                          <option value="flat_rack_40">Flat rack 40</option>
+                          <option value="platform_20">Platform 20</option>
+                          <option value="platform_40">Platform 40</option>
+                          <option value="other">High Cube 40</option>
+                        </select>
+                        <div class="error" *ngIf="submitted && added && load.controls.containerType.errors?.required">Type is required</div>
+                      </div>
+                      <div class="col-lg-3">
+                        <div class="form-group">
+                          <input formControlName="weight" type="text" placeholder="Ukupna težina/kg" class="form-control small" maxlength="6">
+                          <div class="error" *ngIf="submitted && cargoForm.controls.weight.errors?.required">Weight is required</div>
+                        </div>
+                      </div>
+                      <div class="col-lg-3">
+                        <div class="form-group">
+                          <input maxlength="6" formControlName="price" type="text" placeholder="Ukupna cijena/EUR" class="form-control small">
+                          <div class="error" *ngIf="submitted && cargoForm.controls.price.errors?.required">Price is required</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <div class="col-lg-12" formArrayName="loads">
+                      <p>Kreirajte mjesta utovara</p>
+                      <div class="col-lg-12">
+                        <button type="button" (click)="addLoad()" class="btn button-small">+</button>
+                        <div class="error-center" *ngIf="submitted && cargoForm.controls.loads.errors?.plusNotValid">Load is required</div>
+                      </div>
+                      <div class="col-lg-12" *ngFor="let load of loads().controls; let i=index" [formGroupName]="i">
+                        <div class="row"><p>Mjesto utovara {{i + 1}}</p></div>
+                        <div class="row">
+                          <div class="col-lg-4">
+                            <input type="text" formControlName="loadAddress" class="form-control" placeholder="Adresa">
+                            <div class="error" *ngIf="submitted && added && load.controls.loadAddress.errors?.required">Address is required</div>
+                          </div>
+                          <div class="col-lg-4">
+                            <input type="text" formControlName="loadCity" class="form-control" placeholder="Grad/Mjesto">
+                            <div class="error" *ngIf="submitted && added && load.controls.loadCity.errors?.required">City is required</div>
+                          </div>
+                          <div class="col-lg-4">
+                            <select formControlName="loadCountry" class="form-control">
+                              <option value="" disabled selected hidden>Country</option>
+                              <option *ngFor="let country of countries" value="{{country.name}}">{{country.name}}</option>
+                            </select>
+                            <div class="error" *ngIf="submitted && added && load.controls.loadCountry.errors?.required">County is required</div>
+                          </div>
+                        </div>
+                        <div class="row mt-1">
+                          <div class="col-lg-4">
+                            <input type="text"
+                            placeholder="Datum utovara"
+                            class="form-control date-to-time-margin"
+                            bsDatepicker
+                            formControlName="loadDate"
+                            >
+                            <div class="error" *ngIf="submitted && added && load.controls.loadDate.errors?.required">Date is required</div>
+                          </div>
+                          <div class="col-lg-4">
+                            <timepicker formControlName="loadTime"></timepicker>
+                            <div class="error" *ngIf="submitted && added && load.controls.loadTime.errors?.required">Time is required</div>
+                          </div>
+                        </div>
+                        <div class="row">
+                          <div class="col-lg-12">
+                            <button (click)="removeLoad(i)" class="btn">Remove</button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <div class="col-lg-12" formArrayName="unLoads">
+                      <p>Kreirajte mjesta istovara</p>
+                      <div class="col-lg-12">
+                        <button type="button" (click)="addUnLoad()" class="btn button-small">+</button>
+                        <div class="error-center" *ngIf="submitted && cargoForm.controls.unLoads.errors?.plusNotValid">UnLoad is required</div>
+                      </div>
+                      <div class="col-lg-12" *ngFor="let unLoad of unLoads().controls; let i=index" [formGroupName]="i">
+                        <div class="row"><p>Mjesto istovara {{i + 1}}</p></div>
+                        <div class="row">
+                          <div class="col-lg-4">
+                            <input type="text" formControlName="unLoadAddress" class="form-control" placeholder="Adresa">
+                            <div class="error" *ngIf="submitted && added && unLoad.controls.unLoadAddress.errors?.required">Address is required</div>
+                          </div>
+                          <div class="col-lg-4">
+                            <input type="text" formControlName="unLoadCity" class="form-control" placeholder="Grad/Mjesto">
+                            <div class="error" *ngIf="submitted && added && unLoad.controls.unLoadCity.errors?.required">Weight is required</div>
+                          </div>
+                          <div class="col-lg-4">
+                            <select formControlName="unLoadCountry" class="form-control">
+                              <option value="" disabled selected hidden>Country</option>
+                              <option *ngFor="let country of countries" value="{{country.name}}">{{country.name}}</option>
+                            </select>
+                            <div class="error" *ngIf="submitted && added && unLoad.controls.unLoadCountry.errors?.required">Weight is required</div>
+                          </div>
+                        </div>
+                        <div class="row">
+                          <div class="col-lg-4">
+                            <input type="text"
+                            placeholder="Datepicker"
+                            class="form-control date-to-time-margin"
+                            bsDatepicker
+                            formControlName="unLoadDate"
+                            >
+                            <div class="error" *ngIf="submitted && added && unLoad.controls.unLoadDate.errors?.required">Date is required</div>
+                          </div>
+                          <div class="col-lg-4">
+                            <timepicker formControlName="unLoadTime"></timepicker>
+                            <div class="error" *ngIf="submitted && added && unLoad.controls.unLoadTime.errors?.required">Time is required</div>
+                          </div>
+                        </div>
+                        <div class="row">
+                          <div class="col-lg-12">
+                            <button (click)="removeUnLoad(i)" class="btn">Remove</button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-lg-12">
+                    <div class="row">
+                      <div class="col-lg-12">
+                        <div class="form-group">
+                          <textarea maxlength="200" rows="4" formControlName="description" placeholder="Napomena" class="form-control"></textarea>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <button type="submit" *ngIf="!isLoading" class="button-submit">Go</button>
+                  </div>
+                </form>
+              </mat-step>
+              <mat-step label="Odabir transportera"></mat-step>
+              <mat-step label="Informacije"></mat-step>
+            </mat-vertical-stepper>
+          </div>
+        </div>
+      </div>
+    </mat-card>
+  </div>
+</div>

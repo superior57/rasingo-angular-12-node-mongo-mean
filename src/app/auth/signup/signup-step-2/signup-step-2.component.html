@@ -1,0 +1,43 @@
+<div class="container-fluid pages">
+  <div class="container header-add-pages">
+    <h1>Prijavite se i koristite naše usluge<br><span>30 dana besplatno</span></h1>
+  </div>
+  <div class="container cont-pages">
+    <mat-card class="custom">
+      <mat-spinner *ngIf="isLoading"></mat-spinner>
+        <mat-vertical-stepper #stepper [selectedIndex]="2">
+          <mat-step label="Quick info"></mat-step>
+        <mat-step label="Company info"></mat-step>
+        <mat-step label="Upload documents">
+          <form [formGroup]="docsForm" (submit)="onSaveDocs()" *ngIf="!isLoading">
+          <div class="row">
+            <div class="col-12">
+              <div class="row">
+                <label class="lic">Izvod iz sudskog registra</label>
+                <div class="form-group">
+                  <input type="file" #filePicker (change)="onISRPicked($event)">
+                </div>
+              </div>
+              <div class="row" *ngIf="!firmOnly">
+                <label class="lic">Licenca za međunarodni prijevoz</label>
+                <div class="form-group">
+                  <input type="file" #filePicker (change)="onLMPPicked($event)">
+                </div>
+              </div>
+              <div class="row" *ngIf="!firmOnly">
+                <label class="lic">Polica osiguranja po cmru</label>
+                <div class="form-group">
+                  <input type="file" #filePicker (change)="onPOCMRPicked($event)">
+                </div>
+              </div>
+            </div>
+            <div class="col-12">
+              <button type="submit" *ngIf="!isLoading" class="button-submit">GO</button>
+            </div>
+          </div>
+        </form>
+        </mat-step>
+      </mat-vertical-stepper>
+    </mat-card>
+  </div>
+</div>

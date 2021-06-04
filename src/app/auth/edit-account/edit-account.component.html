@@ -1,0 +1,53 @@
+<div class="container-fluid pages">
+  <div class="container header-add-pages">
+    <h1>Postavke korisničkog računa</h1>
+  </div>
+  <div class="container cont-pages">
+    <mat-card>
+      <mat-spinner *ngIf="isLoading"></mat-spinner>
+      <div class="col-lg-12">
+        <div class="row">
+          <div class="col-lg-2">
+            <app-sidebar></app-sidebar>
+          </div>
+          <div class="col-lg-10">
+            <form class="edit-form" [formGroup]="passwordForm" (submit)="onSavePassword()" *ngIf="!isLoading">
+              <div class="container">
+                <div class="row acc-row">
+                  <label>
+                    Lozinka
+                  </label>
+                </div>
+                <div class="row">
+                  <input type="password" formControlName="oldPassword" placeholder="Stara lozinka" class="form-control acc-input small"><br>
+                </div>
+                <div class="row">
+                  <div class="error" *ngIf="submitted && passwordForm.controls.oldPassword.errors?.required">Old password is required</div>
+                </div>
+                <div class="row">
+                  <input type="password" formControlName="newPassword" placeholder="Nova lozinka" class="form-control acc-input small">
+                </div>
+                <div class="row">
+                  <div class="error" *ngIf="submitted && passwordForm.controls.newPassword.errors?.required">New password is required</div>
+                </div>
+                <div class="row">
+                  <input type="password" formControlName="confirmNewPassword" placeholder="Ponovi novu lozinku" class="form-control acc-input small" pattern={{f.newPassword.value}}>
+                </div>
+                <div class="row">
+                  <div class="error" *ngIf="submitted && passwordForm.controls.confirmNewPassword.errors?.pattern">Password and Confirm password doesn't match</div>
+                  <div class="error" *ngIf="submitted && passwordForm.controls.confirmNewPassword.errors?.required">Confirm password is required</div>
+                </div>
+                <div class="row">
+                  <a routerLink="/forgotPassword">Zaboravio sam lozinku</a>
+                </div>
+                <div class="button-cont">
+                  <button type="submit" class="button-basic">GO</button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </mat-card>
+  </div>
+</div>

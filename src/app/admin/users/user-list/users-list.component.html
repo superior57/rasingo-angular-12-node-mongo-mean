@@ -1,0 +1,151 @@
+<div class="container-fluid pages">
+  <div class="container header-add-pages">
+    <h1>Popis korisnika</h1>
+  </div>
+  <div class="container cont-pages">
+    <mat-card>
+      <mat-spinner *ngIf="isLoading"></mat-spinner>
+      <mat-expansion-panel *ngFor="let user of users">
+        <mat-expansion-panel-header>
+          {{ user.email }}&nbsp;<img src="../../../../assets/icons/no.png" *ngIf="user.approved == false"><img src="../../../../assets/icons/yes.png" *ngIf="user.approved == true">
+        </mat-expansion-panel-header>
+          <div class="container">
+            <div class="row">
+              <div class="col-lg-3">
+                Odobreno: {{ user.approved }}<br>
+                Ime firme: {{user.companyName}}
+              </div>
+              <div class="col-lg-3">
+                Telefon: {{ user.telephone }}<br>
+                OIB firme: {{user.oib}}
+              </div>
+              <div class="col-lg-3">
+                Tip korisnika: {{user.userType}}<br>
+                Email verificiran : {{ user.isEmailVerified }}<br>
+              </div>
+              <div class="col-lg-3">
+                Adresa: {{ user.address }}<br>
+                Grad: {{user.city}}<br>
+                Poštanski broj: {{ user.postalCode}}
+              </div>
+            </div>
+          </div>
+          <div class="container">
+            <div class="row">
+              <div class="col-lg-12">
+                Dokumenti:
+                <span *ngFor="let doc of user.user_docs">
+                  <a href="http://localhost:3000/api/user/download/{{doc.docsFileName}}">{{doc.docType}}</a>&nbsp;
+                </span>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-lg-12 center" *ngIf="user.approved == false">
+                <form [formGroup]="approveForm" (submit)="onApprove(user.id)" *ngIf="!isLoading">
+                  <button type="submit" class="btn btn-success">Odobri</button>
+                </form>
+              </div>
+            </div>
+          </div>
+          <div class="container">
+            <mat-card class="truck-list" *ngFor="let truck of user.user_trucks; let i=index">
+              <p>Kamion: {{truck.regNumber}}&nbsp;{{truck.truckModel}}</p>
+              <div class="col-lg-12">
+                <div class="row">
+                  <div class="col-lg-3 data">
+                    <p><b>Vrsta kamiona:&nbsp;</b>
+                      <span *ngIf="truck.truckType == 'truck_refrigerated'">Hladnjača</span>
+                      <span *ngIf="truck.truckType == 'truck_adr'">ADR kamion</span>
+                      <span *ngIf="truck.truckType == 'cistern_ind_liq'">Cisterna za industrijske tekućine</span>
+                      <span *ngIf="truck.truckType == 'cistern_food_liq'">Cisterna za prehrambene tekućine</span>
+                      <span *ngIf="truck.truckType == 'truck'">Kamion</span>
+                      <span *ngIf="truck.truckType == 'truck_van_hang'">Kamion za viseći teret</span>
+                      <span *ngIf="truck.truckType == 'truck_half_trailer'">Kamion s poluprikolicom</span>
+                      <span *ngIf="truck.truckType == 'truck_trailer'">Kamion s prikolicom</span>
+                      <span *ngIf="truck.truckType == 'truck_special'">Kamion za izvanredni teret</span>
+                      <span *ngIf="truck.truckType == 'truck_container'">Kamion za prijevot kontejnera</span>
+                      <span *ngIf="truck.truckType == 'truck_vehicles'">Kamion za prijevoz vozila</span>
+                      <span *ngIf="truck.truckType == 'truck_animals'">Kamion za prijevoz životinja</span>
+                      <span *ngIf="truck.truckType == 'truck_tipper'">Kamion kiper</span>
+                      <span *ngIf="truck.truckType == 'truck_food_bulk'">Kamion za prehrambeni rasuti teret</span>
+                      <span *ngIf="truck.truckType == 'combi'">Kombi</span>
+                      <span *ngIf="truck.truckType == 'caddy'">Kedi</span>
+                   </p>
+                  </div>
+                  <div class="col-lg-1 data">
+                    <p><b>Godište:</b> {{truck.year}}</p>
+                  </div>
+                  <div class="col-lg-1 data">
+                    <p><b>Enorma:</b> {{truck.euroNorm}}</p>
+                  </div>
+                  <div class="col-lg-3 data">
+                    <p><b>Datum registracije:</b> {{truck.regDate}}</p>
+                  </div>
+                  <div class="col-lg-2 data">
+                    <p><b>Max nosivost:</b> {{truck.maxWeight}}&nbsp;kg</p>
+                  </div>
+                  <div class="col-lg-2 data">
+                    <p><b>Odobreno:</b>&nbsp;<img src="../../../assets/icons/no.png" *ngIf="truck.approved == false"><img src="../../../assets/icons/yes.png" *ngIf="truck.approved == true" ></p>
+                  </div>
+                </div>
+              </div>
+              <div class="col-lg-12" *ngIf="
+                truck.truckType == 'truck_refrigerated' ||
+                truck.truckType == 'truck' ||
+                truck.truckType == 'truck_van_hang' ||
+                truck.truckType == 'truck_half_trailer' ||
+                truck.truckType == 'truck_trailer' ||
+                truck.truckType == 'truck_special' ||
+                truck.truckType == 'truck_container' ||
+                truck.truckType == 'truck_vehicles' ||
+                truck.truckType == 'combi' ||
+                truck.truckType == 'caddy'
+              ">
+                <div class="row">
+                  <div class="col-lg-4 data">
+                    <p><b>Visina:</b> {{truck.height}}&nbsp;m</p>
+                  </div>
+                  <div class="col-lg-4 data">
+                    <p><b>Dužina:</b> {{truck.tlength}}&nbsp;m</p>
+                  </div>
+                  <div class="col-lg-4 data">
+                    <p><b>Širina:</b> {{truck.width}}&nbsp;m</p>
+                  </div>
+                </div>
+              </div>
+              <div class="col-lg-12">
+                <ul class="data">
+                  <li *ngIf="truck.hydraulicRamp">hidraulična rampa</li>
+                  <li *ngIf="truck.crane">kran</li>
+                  <li *ngIf="truck.winches">vitla</li>
+                  <li *ngIf="truck.adjustableRoof">podesiv krov</li>
+                  <li *ngIf="truck.movableFloor">pomični pod</li>
+                  <li *ngIf="truck.movableTarpaulin">pomična cerada</li>
+                  <li *ngIf="truck.rotatingSignalLight">rotacijsko signalno svjetlo</li>
+                  <li *ngIf="truck.containerLifter">samopodizač kontejnera</li>
+                </ul>
+                <div class="row">
+                  <div class="col-lg-12">
+                    Dokumenti:
+                    <span>
+                      <a href="http://localhost:3000/api/trucks/download/{{truck.TLic}}">Prometna</a>&nbsp;
+                      <a href="http://localhost:3000/api/trucks/download/{{truck.Lic}}">Licenca</a>&nbsp;
+                      <a href="http://localhost:3000/api/trucks/download/{{truck.CMRLic}}">CMR licenca</a>&nbsp;
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="row justify-content-center">
+                <button class="btn btn-danger data" (click)="onDeleteTruck(truck._id)">DELETE TRUCK</button>&nbsp;
+                <button class="btn btn-success data" (click)="onApproveTruck(truck._id)" *ngIf="truck.approved == false">APPROVE TRUCK</button>
+              </div>
+            </mat-card>
+          </div>
+        </mat-expansion-panel>
+        <mat-paginator [length]="totalUsers" [pageSize]="usersPerPage" [pageSizeOptions]="pageSizeOptions" (page)="onChangedPage($event)"
+          *ngIf="users.length > 0">
+        </mat-paginator>
+      </mat-card>
+    </div>
+  </div>

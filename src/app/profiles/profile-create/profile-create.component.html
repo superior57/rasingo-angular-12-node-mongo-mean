@@ -1,0 +1,97 @@
+<div class="container-fluid pages">
+  <div class="container header-add-pages">
+    <h1>Kreiranje profila</h1>
+  </div>
+  <div class="container cont-pages">
+    <mat-card>
+      <mat-spinner *ngIf="isLoading"></mat-spinner>
+      <form class="edit-form" [formGroup]="profileForm" (submit)="onSaveProfile()" *ngIf="!isLoading">
+        <div class="form-group">
+          <div class="container">
+            <div class="row justify-content-center">
+              <h2>Set your cover photo(Min width: 1200px, Min height: 400px)</h2>
+              <div class="text-center col-md-12">
+                  <input type="file" (change)="coverFileChangeEvent($event)" />
+              </div>
+            </div>
+            <div class="row">
+                <div class="text-center col-md-12">
+                    <image-cropper
+                    [imageChangedEvent]="coverImageChangedEvent"
+                    format="png"
+                    [onlyScaleDown]="true"
+                    (imageCropped)="coverImageCropped($event)"
+                    [onlyScaleDown]="true"
+                    [cropperStaticWidth]="coverCropperStaticWidth"
+                    [cropperStaticHeight]="coverCropperStaticHeight">
+                  </image-cropper>
+                </div>
+                <div class="text-center col-md-12">
+                    <h3>Preview</h3>
+                    <img [src]="coverCroppedImage" class="crop-preview" />
+                </div>
+            </div>
+        </div>
+        </div>
+        <div class="form-group">
+          <div class="container">
+            <div class="row justify-content-center">
+              <h2>Set your profile photo (Min width: 200px, Min height: 200px)</h2>
+              <div class="text-center col-md-12">
+                  <input type="file" (change)="profileFileChangeEvent($event)" />
+              </div>
+            </div>
+            <div class="row">
+                <div class="text-center col-md-8">
+                    <h5>Crop Image</h5>
+                    <image-cropper
+                    [imageChangedEvent]="profileImageChangedEvent"
+                    [maintainAspectRatio]="false"
+                    [aspectRatio]="4 / 4"
+                    format="png"
+                    (imageCropped)="profileImageCropped($event)"
+                    [cropperStaticWidth]="profileCropperStaticWidth"
+                    [cropperStaticHeight]="profileCropperStaticHeight">
+                  </image-cropper>
+                </div>
+                <div class="text-center col-md-4">
+                    <h5>Preview</h5>
+                    <img [src]="profileCroppedImage" class="crop-preview" />
+                </div>
+            </div>
+        </div>
+        </div>
+        <div class="form-group">
+          <div class="row row-profile">
+            <textarea rows="4" formControlName="about" placeholder="About" class="form-control"></textarea>
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="row row-profile">
+            <input type="text" class="w-100" formControlName="web" placeholder="Web site" class="form-control">
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="row row-profile">
+            <input type="number" formControlName="employees" placeholder="No. of employees" class="form-control small">
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="row row-profile">
+            <input type="number" formControlName="year" placeholder="Godina postojanja" class="form-control small">
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="row row-profile">
+            <input type="text" formControlName="workingHours" placeholder="Radno vrijeme" class="form-control small">
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="row justify-content-center">
+            <button type="submit" *ngIf="!isLoading" class="button-submit">GO</button>
+          </div>
+        </div>
+      </form>
+    </mat-card>
+  </div>
+</div>

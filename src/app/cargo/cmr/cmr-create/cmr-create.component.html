@@ -1,0 +1,271 @@
+<div class="container-fluid pages">
+  <div class="container header-add-pages">
+    <h1>Izrada CMR-a</h1>
+  </div>
+  <div class="container cont-pages">
+    <mat-card>
+      <mat-spinner *ngIf="isLoading"></mat-spinner>
+      <form [formGroup]="CMRForm" (submit)="onSaveCMR()" *ngIf="!isLoading">
+        <table class="table cmr-cont">
+          <tbody>
+            <tr>
+              <td class="td-50">
+                <p class="heading">1. Pošiljatelj</p>
+                <div class="form-group">
+                  <textarea formControlName="sender" type="text" class="form-control"></textarea>
+                </div>
+              </td>
+              <td class="td-50">
+                <p class="heading">MEĐUNARODNI TOVARNI LIST</p>
+                <div class="form-group">
+                  <textarea formControlName="intList" type="text" class="form-control"></textarea>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td class="td-50">
+                <p class="heading">2. Primatelj</p>
+                <div class="form-group">
+                  <textarea formControlName="reciever" type="text" class="form-control"></textarea>
+                </div>
+              </td>
+              <td rowspan="2" class="td-50">
+                <p class="heading">16. Prijevoznik</p>
+                <div class="form-group">
+                  <textarea formControlName="transporter" type="text" class="form-control"></textarea>
+                </div>
+                <p class="heading">17. Ostali prijevoznici</p>
+                <div class="form-group">
+                  <textarea formControlName="otherTransporters" type="text" class="form-control"></textarea>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <p class="heading">3. Mjesto isporuke</p>
+                <div class="form-group">
+                  <textarea formControlName="placeOfDelivery" type="text" class="form-control"></textarea>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <p class="heading">4.Mjesto i datum preuzimanja pošiljke na prijevoz</p>
+                <div class="form-group">
+                  <textarea formControlName="placeAndDateOfPickUp" type="text" class="form-control"></textarea>
+                </div>
+              </td>
+              <td rowspan="2">
+                <p class="heading">18. Primjedbe i ograničenja prijevoznika</p>
+                <div class="form-group">
+                  <textarea formControlName="remarks" type="text" class="form-control"></textarea>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <p class="heading">5. Popratne liste</p>
+                <div class="form-group">
+                  <textarea formControlName="accompanyingLists" type="text" class="form-control"></textarea>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td colspan="2">
+                <table class="table sub-table-1">
+                  <tbody>
+                    <tr>
+                      <td class="no-border">
+                        <p class="heading">6. Oznaka i broj</p>
+                        <div class="form-group">
+                          <textarea formControlName="label" type="text" class="form-control"></textarea>
+                        </div>
+                      </td>
+                      <td class="no-border">
+                        <p class="heading">7. Broj koleta</p>
+                        <div class="form-group">
+                          <textarea formControlName="parcelNum" type="text" class="form-control"></textarea>
+                        </div>
+                      </td>
+                      <td class="no-border">
+                        <p class="heading">8. Vrsta ambalaže</p>
+                        <div class="form-group">
+                          <textarea formControlName="typeOfPackaging" type="text" class="form-control"></textarea>
+                        </div>
+                      </td>
+                      <td class="no-border">
+                        <p class="heading">9. Vrsta robe</p>
+                        <div class="form-group">
+                          <textarea formControlName="typeOfCargo" type="text" class="form-control"></textarea>
+                        </div>
+                      </td>
+                      <td rowspan="2">
+                        <p class="heading">10. Statistički broj</p>
+                        <div class="form-group">
+                          <textarea formControlName="statisticNum" type="text" class="form-control"></textarea>
+                        </div>
+                      </td>
+                      <td rowspan="2">
+                        <p class="heading">11. Bruto težina</p>
+                        <div class="form-group">
+                          <textarea formControlName="grossWeight" type="text" class="form-control"></textarea>
+                        </div>
+                      </td>
+                      <td rowspan="2" class="n-border-right">
+                        <p class="heading">12. Zapremnina</p>
+                        <div class="form-group">
+                          <textarea formControlName="volume" type="text" class="form-control"></textarea>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="b-top"><p class="heading">Class</p></td>
+                      <td class="b-top"><p class="heading">Num</p></td>
+                      <td class="b-top"><p class="heading">Letter</p></td>
+                      <td class="b-top"><p class="heading">ADR</p></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <p class="heading">13. Uputstva pošiljatelja</p>
+                <div class="form-group">
+                  <textarea formControlName="instructions" type="text" class="form-control"></textarea>
+                </div>
+              </td>
+              <td>
+                <p class="heading">19. Posebni dogovori</p>
+                <div class="form-group">
+                  <textarea formControlName="deals" type="text" class="form-control"></textarea>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <p class="heading">14. Odredbe o plažćanju vozarine</p>
+                <div class="form-group">
+                  <textarea formControlName="provisions" type="text" class="form-control"></textarea>
+                </div>
+              </td>
+              <td>
+                <table class="table sub-table-2">
+                  <tbody>
+                    <tr>
+                      <td><p class="heading">20. Plaća</p></td>
+                      <td><p class="heading">Pošiljatelj</p></td>
+                      <td><p class="heading">Valuta</p></td>
+                      <td class="n-border-right"><p class="heading">Primatelj</p></td>
+                    </tr>
+                    <tr>
+                      <td><p class="heading">Prijevozni troškovi</p></td>
+                      <td>
+                        <div class="form-group">
+                          <textarea formControlName="expensesSender" type="text" class="form-control"></textarea>
+                        </div>
+                      </td>
+                      <td>
+                        <div class="form-group">
+                          <textarea formControlName="expensesCurrency" type="text" class="form-control"></textarea>
+                        </div>
+                      </td>
+                      <td class="n-border-right">
+                        <div class="form-group">
+                          <textarea formControlName="expensesReciever" type="text" class="form-control"></textarea>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <p class="heading">
+                          Ostatak<br>Dodatak<br>Ostali troškovi
+                        </p>
+                      </td>
+                      <td>
+                        <div class="form-group">
+                          <textarea formControlName="residueSender" type="text" class="form-control"></textarea>
+                        </div>
+                      </td>
+                      <td>
+                        <div class="form-group">
+                          <textarea formControlName="residueCurrency" type="text" class="form-control"></textarea>
+                        </div>
+                      </td>
+                      <td class="n-border-right">
+                        <div class="form-group">
+                          <textarea formControlName="residueReciever" type="text" class="form-control"></textarea>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><p class="heading">Ukupno</p></td>
+                      <td>
+                        <div class="form-group">
+                          <textarea formControlName="totalSender" type="text" class="form-control"></textarea>
+                        </div>
+                      </td>
+                      <td>
+                        <div class="form-group">
+                          <textarea formControlName="totalCurrency" type="text" class="form-control"></textarea>
+                        </div>
+                      </td>
+                      <td class="n-border-right">
+                        <div class="form-group">
+                          <textarea formControlName="totalReciever" type="text" class="form-control"></textarea>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <p class="heading">21. Ispostavljeno u</p>
+                <div class="form-group">
+                  <textarea formControlName="turned" type="text" class="form-control"></textarea>
+                </div>
+              </td>
+              <td>
+                <p class="heading">15. Poduzeće</p>
+                <div class="form-group">
+                  <textarea formControlName="company" type="text" class="form-control"></textarea>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td colspan="2">
+                <table class="sub-table-3">
+                  <tr>
+                    <td class="n-border-left">
+                      <p class="heading">22. Potpis i pečat pošiljatelja</p>
+                      <div class="form-group">
+                        <textarea formControlName="signatureSender" type="text" class="form-control"></textarea>
+                      </div>
+                    </td>
+                    <td>
+                      <p class="heading">23. Potpis i pečat prijevoznika</p>
+                      <div class="form-group">
+                        <textarea formControlName="signatureTransporter" type="text" class="form-control"></textarea>
+                      </div>
+                    </td>
+                    <td class="n-border-right">
+                      <p class="heading">24. Potpis i pečat primatelja</p>
+                      <div class="form-group">
+                        <textarea formControlName="signatureReciever" type="text" class="form-control"></textarea>
+                      </div>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="form-group">
+          <button type="submit" class="button-submit">Go</button>
+        </div>
+      </form>
+    </mat-card>
+  </div>
+</div>

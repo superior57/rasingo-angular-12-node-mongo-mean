@@ -1,0 +1,15 @@
+<div class="container-fluid pages">
+  <div class="container header-add-pages">
+    <h1>We will send code to your phone</h1>
+  </div>
+  <div class="container cont-pages">
+    <mat-card>
+      <p>We will send phone activation code to {{dialCode}}{{telephone}}</p>
+      <form [formGroup]="sendPCForm" (submit)="onSendPC()" *ngIf="!isLoading">
+        <div class="form-group">
+          <button type="submit" *ngIf="!isLoading" class="button-submit">Go</button>
+        </div>
+      </form>
+    </mat-card>
+  </div>
+</div>

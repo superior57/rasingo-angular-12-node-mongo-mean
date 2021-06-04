@@ -1,0 +1,8 @@
+{
+  "env": {
+    "MONGO_ATLAS_PW": "Rasingo654321",
+    "JWT_KEY": "secret_this_should_be_longer",
+    "TWILIO_ACCOUNT_SID": "AC098ab6b0efee5a2bdb869eb10cdbd3bd",
+    "TWILIO_AUTH_TOKEN": "29b491d2995ccbd3309844a613b44e82"
+  }
+}

@@ -1,0 +1,71 @@
+<div class="container-fluid pages">
+  <div class="container header-add-pages">
+    <h1>Trenutna ponuda tereta</h1>
+  </div>
+  <div class="container cont-pages">
+    <mat-card>
+      <mat-spinner *ngIf="isLoading"></mat-spinner>
+      <div class="container">
+      <div class="row justify-content-center">
+        <mat-card *ngFor="let cargo of cargos">
+          <div class="col-sm-4 text-center cargo-container">
+            <div class="row justify-content-center">
+              <div class="icon-wrapper">
+                <div class="icon icon-cargo-{{cargo.cargoType}}">
+                  <div class="info-1">
+                    <span>{{cargo.price}}&nbsp;EUR</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row justify-content-center">
+              <div class="route">
+                <span>{{cargo.loads[0].city}} - {{cargo.unLoads[0].city}}</span><br>
+              </div>
+            </div>
+            <div class="row justify-content-center">
+              <div class="info-2">
+                <span><b>Vrsta tereta:</b> &nbsp;</span>
+                <span *ngIf="cargo.cargoType == 'adr'">ADR</span>
+                <span *ngIf="cargo.cargoType == 'refrigerated'">hlađena/smrznuta roba</span>
+                <span *ngIf="cargo.cargoType == 'ind_liq'">industrijske tekućine</span>
+                <span *ngIf="cargo.cargoType == 'food_liq'">prehrambene tekućine</span>
+                <span *ngIf="cargo.cargoType == 'ind_bulk'">industrijski rasuti teret</span>
+                <span *ngIf="cargo.cargoType == 'food_bulk'">prehrambeni rasuti teret</span>
+                <span *ngIf="cargo.cargoType == 'special'">izvanredni teret</span>
+                <span *ngIf="cargo.cargoType == 'container'">kontejner</span>
+                <span *ngIf="cargo.cargoType == 'not_palletized'">ne paletriana roba</span>
+                <span *ngIf="cargo.cargoType == 'palletized'">paletirana roba</span>
+                <span *ngIf="cargo.cargoType == 'vehicles'">vozila</span>
+                <span *ngIf="cargo.cargoType == 'special_lengths'">roba posebnih dužina</span>
+                <span *ngIf="cargo.cargoType == 'special_heights'">roba posebnih visina</span>
+                <span *ngIf="cargo.cargoType == 'large_dimensions'">roba velikih dimenzija</span>
+                <span *ngIf="cargo.cargoType == 'hang'">viseći teret</span>
+                <span *ngIf="cargo.cargoType == 'animals'">životinje</span>
+                <span *ngIf="cargo.cargoType == 'other'">ostalo</span>
+              </div>
+            </div>
+            <div class="row">
+              <div class="info-3 col-sm-12">
+                <div class="row">
+                <div class="col-sm-6">
+                  <span><b>Utovarna mjesta:</b>&nbsp;{{cargo.loads.length}}</span><br>
+                  <span><b>Datum utovara:</b><br>13.03.2021</span>
+                </div>
+                <div class="col-sm-6">
+                  <span><b>Istovarna mjesta:</b>&nbsp;{{cargo.unLoads.length}}</span><br>
+                  <span><b>Rok isporuke:</b><br>13.03.2021</span>
+                </div>
+              </div>
+              </div>
+            </div>
+          </div>
+      </mat-card>
+    </div>
+  </div>
+  <mat-paginator [length]="totalCargos" [pageSize]="cargosPerPage" [pageSizeOptions]="pageSizeOptions" (page)="onChangedPage($event)"
+  *ngIf="cargos.length > 0">
+  </mat-paginator>
+    </mat-card>
+  </div>
+</div>

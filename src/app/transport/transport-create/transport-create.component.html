@@ -1,0 +1,66 @@
+<div class="container-fluid pages">
+  <div class="container header-add-pages">
+    <h1>Kreiranje transporta</h1>
+  </div>
+  <div class="container cont-pages">
+    <mat-card>
+      <mat-spinner *ngIf="isLoading"></mat-spinner>
+      <mat-horizontal-stepper selectedIndex="0">
+        <mat-step label="Kreiranje transporta">
+          <form [formGroup]="transportForm" (submit)="onSaveTransport()" *ngIf="!isLoading">
+            <div class="row">
+              <div class="col-lg-5">
+                <input type="text"
+                placeholder="When are you available?"
+                class="form-control"
+                bsDatepicker
+                formControlName="transportDate"
+                >
+                <div class="error" *ngIf="submitted && transportForm.controls.transportDate.errors?.required">Date is required</div>
+              </div>
+              <div class="col-lg-2">
+                <input type="number" formControlName="no" class="form-control" placeholder="Available no. of">
+                <div class="error" *ngIf="submitted && transportForm.controls.no.errors?.required">Number is required</div>
+              </div>
+              <div class="col-lg-5">
+                <select formControlName="placekg" class="form-control">
+                  <option value="" disabled selected hidden>Mjesto</option>
+                  <option value='fpp'>Free pallet place</option>
+                  <option value='kg'>kg</option>
+                </select>
+                <div class="error" *ngIf="submitted && transportForm.controls.placekg.errors?.required">Place is required</div>
+              </div>
+            </div>
+            <br>
+            <div class="row">
+              <div class="form-group col-lg-4">
+                <input type="text" formControlName="start" class="form-control" placeholder="Load city">
+                <div class="error" *ngIf="submitted && transportForm.controls.start.errors?.required">Load city is required</div>
+              </div>
+              <div class="form-group col-lg-4">
+                <input type="text" formControlName="destination" class="form-control" placeholder="Unload city">
+                <div class="error" *ngIf="submitted && transportForm.controls.destination.errors?.required">Unload city is required</div>
+              </div>
+              <div class="form-group col-lg-4">
+                <select formControlName="truckId" class="form-control">
+                  <option value="" disabled selected hidden>Kamion</option>
+                  <option *ngFor="let truck of trucks" value="{{truck._id}}">{{truck.regNumber}}</option>
+                </select>
+                <div class="error" *ngIf="submitted && transportForm.controls.placekg.errors?.required">Place is required</div>
+              </div>
+            </div>
+            <div class="form-group">
+              <textarea rows="4" formControlName="description" placeholder="Napomena" class="form-control"></textarea>
+              <div class="error" *ngIf="submitted && cargoForm.controls.description.errors?.required">Description is required</div>
+            </div>
+            <div class="form-group">
+              <button type="submit" *ngIf="!isLoading" class="button-submit">Go</button>
+            </div>
+          </form>
+        </mat-step>
+        <mat-step label="Odabir firme"></mat-step>
+        <mat-step label="Informacije"></mat-step>
+      </mat-horizontal-stepper>
+    </mat-card>
+  </div>
+</div>

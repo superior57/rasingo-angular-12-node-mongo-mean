@@ -1,0 +1,34 @@
+<div class="container-fluid">
+  <div class="container header-add-pages">
+    <h1>Kontakt</h1>
+  </div>
+  <div class="container cont-pages">
+    <mat-card class="left">
+      <mat-spinner *ngIf="isLoading"></mat-spinner>
+      <p>Stojimo na raspolaganju svojim korisnicima.</p>
+        <p>Ispunite e-mail obrazac te ćemo Vas kontaktirati u najbržem mogućem vremenu. Bitno nam je Vaše mišljenje jer samo s korektnim feedbackom možemo rasti prema potrebni naših korisnika. </p>
+        <p>Ne oklijevaj i pošalji nam poruku.</p>
+        <h2>Kontaktirajte nas</h2>
+        <form [formGroup]="contactForm" (submit)="onContact()">
+          <div class="form-group">
+            <input type="text" formControlName="name" placeholder="Vaše ime" class="form-control small" maxlength="20">
+            <div class="error" *ngIf="submitted && contactForm.controls.name.errors?.required">Name is required</div>
+          </div>
+          <div class="form-group">
+            <input type="text" formControlName="email" placeholder="Vaš email" class="form-control small" maxlength="30">
+            <div class="error" *ngIf="submitted && contactForm.controls.email.errors?.required">Email is required</div>
+            <div class="error" *ngIf="submitted && contactForm.controls.email.errors?.email">Email is not valid</div>
+          </div>
+          <div class="form-group">
+            <textarea maxlength="500" formControlName="message" class="form-control" placeholder="Poruka"></textarea>
+            <div class="error" *ngIf="submitted && contactForm.controls.message.errors?.required">Message is required</div>
+          </div>
+          <div class="row justify-content-center">
+            <div class="form-group">
+              <button type="submit" *ngIf="!isLoading" class="button-submit">Go</button>
+            </div>
+          </div>
+        </form>
+    </mat-card>
+  </div>
+</div>

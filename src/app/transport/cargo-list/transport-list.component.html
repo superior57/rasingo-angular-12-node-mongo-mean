@@ -1,0 +1,108 @@
+<div class="container-fluid pages">
+  <div class="container header-add-pages">
+    <h1>Trenutna ponuda transporta</h1>
+  </div>
+  <div class="container cont-pages">
+    <mat-card>
+      <mat-spinner *ngIf="isLoading"></mat-spinner>
+      <div class="container">
+        <div class="row justify-content-center">
+          <mat-card *ngFor="let transport of transports">
+            <div class="transport-container">
+              <div class="row justify-content-center">
+                <div class="icon-wrapper">
+                  <div class="icon icon-truck-{{transport.truck[0].truckType}}">
+                    <div class="info-1">
+                      <span>
+                        {{transport.no}}&nbsp;
+                        <span *ngIf="transport.placekg == 'fpp'">slobodnih paletnih mjesta</span>
+                        <span *ngIf="transport.placekg == 'kg'">kg slobodno</span>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="row justify-content-center">
+                <div class="route">
+                  <span>{{transport.start}} - {{transport.destination}}</span><br>
+                </div>
+              </div>
+            </div>
+            <div class="row justify-content-center">
+              <div class="info-2">
+                <span><b>Vrsta kamiona:</b> &nbsp;</span>
+                <span *ngIf="transport.truck[0].truckType == 'truck_special'">Kamion za izvanredni prijevoz</span>
+              </div>
+            </div>
+            <div class="row justify-content-center">
+              <a class="button-basic" data-toggle="modal" href="#Modal{{transport.id}}">GO</a>
+            </div>
+            <div class="modal fade" id="Modal{{transport.id}}" tabindex="-1" role="dialog" aria-hidden="true">
+              <div class="modal-dialog">
+                <div class="modal-content">
+                  <div class="container">
+                    <div class="row justify-content-center">
+                        <div class="modal-body">
+                          <div class="container" *ngIf="transport">
+                            <mat-spinner *ngIf="isLoading"></mat-spinner>
+                            <div class="close-modal" data-dismiss="modal"><img src="assets/img/close-icon.svg" alt="Close modal" />Close</div>
+                            <mat-horizontal-stepper #stepper [selectedIndex]="0">
+                              <mat-step label="Odabir tereta">
+                                <div class="row">
+                                  <div class="container" *ngIf="transport">
+                                    <p class="p-upper">Ponuda transporta {{transport.id}}</p>
+                                  </div>
+                                  <div class="col-sm transport-container">
+                                    <div class="row justify-content-center">
+                                      <div class="icon-wrapper">
+                                        <div class="icon icon-truck-{{transport.truck[0].truckType}}">
+                                          <div class="info-1">
+                                            <span>
+                                              {{transport.no}}&nbsp;
+                                              <span *ngIf="transport.placekg == 'fpp'">slobodnih paletnih mjesta</span>
+                                              <span *ngIf="transport.placekg == 'kg'">kg slobodno</span>
+                                            </span>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                    <div class="row justify-content-center">
+                                      <div class="info-2">
+                                        <span><b>Vrsta kamiona:</b> &nbsp;</span>
+                                        <span *ngIf="transport.truck[0].truckType == 'truck_special'">Kamion za izvanredni prijevoz</span>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                                <div class="container">
+                                  <mat-card>
+                                    <p>Proučio sam uvjete i želim poslat ponudu</p>
+                                    <form [formGroup]="transportSignupForm" (submit)="onSignupForCargo(transport.id)" *ngIf="!isLoading">
+                                      <input type="submit" value="GO" class="button-basic">
+                                    </form>
+                                  </mat-card>
+                                </div>
+                            </mat-step>
+                            <mat-step label="Obrada">
+
+                            </mat-step>
+                            <mat-step label="Informacije">
+
+                            </mat-step>
+                          </mat-horizontal-stepper>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </mat-card>
+        </div>
+      </div>
+      <mat-paginator [length]="totalTransports" [pageSize]="transportsPerPage" [pageSizeOptions]="pageSizeOptions" (page)="onChangedPage($event)"
+        *ngIf="transports.length > 0">
+      </mat-paginator>
+    </mat-card>
+  </div>
+</div>

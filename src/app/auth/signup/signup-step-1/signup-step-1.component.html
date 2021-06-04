@@ -1,0 +1,296 @@
+<div class="container-fluid pages">
+  <div class="container header-add-pages">
+    <h1>Prijavite se i koristite naše usluge<br><span>30 dana besplatno</span></h1>
+  </div>
+  <div class="container cont-pages">
+    <mat-card>
+      <mat-spinner *ngIf="isLoading"></mat-spinner>
+        <mat-vertical-stepper #stepper selectedIndex="1">
+          <mat-step label="Quick info"></mat-step>
+          <mat-step label="Company info">
+          <form [formGroup]="companyForm" (submit)="onSignupStep1()" *ngIf="!isLoading">
+            <p>
+              Kako bi brže i točnije pronalazili posao po Vašoj mjeri na RASINGO stranicama,
+              ispunite obrazac Vaših poslovnih preferencija i načina poslovanja...</p>
+            <div class="form-group">
+                <input type="text" placeholder="Company name" formControlName="companyName" name="companyName" class="form-control" maxlength="30">
+                <div class="error" *ngIf="submitted && companyForm.controls.companyName.errors?.required">Company is required</div>
+            </div>
+            <div class="form-group">
+              <input type="text" placeholder="OIB" formControlName="taxNo" class="form-control" maxlength="30">
+              <div class="error" *ngIf="submitted && companyForm.controls.taxNo.errors?.required">Oib is required</div>
+            </div>
+            <div class="form-group">
+              <div class="row">
+                <div class="col-sm-3">
+                  <select formControlName="dialCode" class="form-control">
+                    <option value="" disabled selected hidden>Dial code</option>
+                    <option *ngFor="let country of countries" value="{{country.dial_code}}">{{country.name}}&nbsp;{{country.dial_code}}</option>
+                  </select>
+                  <div class="error" *ngIf="submitted && companyForm.controls.dialCode.errors?.required">Dial code is required</div>
+                </div>
+                <div class="col-sm-9">
+                  <input type="text" placeholder="telephone" formControlName="telephone" class="form-control" maxlength="20">
+                  <div class="error" *ngIf="submitted && companyForm.controls.telephone.errors?.required">Telephone is required</div>
+                  <div class="error" *ngIf="submitted && companyForm.controls.telephone.errors?.pattern">Numbers only. Example: 0981804842</div>
+                </div>
+              </div>
+            </div>
+            <div class="form-group">
+              <input type="text" placeholder="address" formControlName="address" class="form-control" maxlength="40">
+              <div class="error" *ngIf="submitted && companyForm.controls.address.errors?.required">Address is required</div>
+            </div>
+            <div class="form-group">
+              <input type="text" placeholder="city" formControlName="city" class="form-control" maxlength="30">
+              <div class="error" *ngIf="submitted && companyForm.controls.city.errors?.required">City is required</div>
+            </div>
+            <div class="form-group">
+              <select formControlName="country" class="form-control">
+                <option value="" disabled selected hidden>Country</option>
+                <option *ngFor="let country of countries" value="{{country.name}}">{{country.name}}</option>
+              </select>
+              <div class="error" *ngIf="submitted && companyForm.controls.country.errors?.required">Country is required</div>
+            </div>
+            <div class="form-group">
+              <input type="text" placeholder="Postal code" formControlName="postalCode" class="form-control" maxlength="10">
+              <div class="error" *ngIf="submitted && companyForm.controls.postalCode.errors?.required">Postal code is required</div>
+            </div>
+            <div class="form-group">
+              <select [(ngModel)]="userTypeSelected" formControlName="userType" class="form-control">
+                <option value="" disabled hidden>User type</option>
+                <option value="firms">
+                  Tražim adekvatan prijevoz za robu
+                </option>
+                <option value="drivers">
+                  Tražim robu za transport
+                </option>
+                <option value="both">
+                  Tražim adekvatan prijevoz za robu i robu za transport
+                </option>
+              </select>
+              <div class="error" *ngIf="submitted && companyForm.controls.userType.errors?.required">User type is required</div>
+            </div>
+            <div class="col-lg-12" *ngIf="userTypeSelected == 'drivers' || userTypeSelected == 'both'" formArrayName="trucks">
+              <p>Unesite vašu flotu</p>
+              <div class="col-lg-12">
+                <button type="button" (click)="addTruck()" class="btn button-small">+</button>
+                <div class="error-center" *ngIf="submitted && companyForm.controls.trucks.errors?.plusNotValid">Please add your fleet</div>
+              </div>
+              <div class="col-lg-12" *ngFor="let truck of trucks().controls; let i=index" [formGroupName]="i">
+                <div class="row"><p>Truck {{i + 1}}</p></div>
+                <div class="row">
+                  <div class="col-lg-3">
+                    <div class="form-group">
+                      <select [(ngModel)]="truck.truckTypeSelected" formControlName="truckType" class="form-control">
+                        <option value="" disabled hidden [ngValue]="Truck">Truck type</option>
+                        <option value="combi">
+                          Kombi
+                        </option>
+                        <option value="caddy">
+                          Kedi
+                        </option>
+                        <option value="cistern_ind_liq">
+                          Cisterna za industrijske tekućine
+                        </option>
+                        <option value="cistern_food_liq">
+                          Cisterna za prehrambene tekućine
+                        </option>
+                        <option value="truck_refrigerated">
+                          Hladnjača
+                        </option>
+                        <option value="truck">
+                          Kamion
+                        </option>
+                        <option value="truck_van_hang">
+                          Kamion s furgonom za viseći teret
+                        </option>
+                        <option value="truck_half_trailer">
+                          Kamion s poluprikolicom
+                        </option>
+                        <option value="truck_trailer">
+                          Kamion s prikolicom
+                        </option>
+                        <option value="truck_special">
+                          Kamion za izvanredni teret
+                        </option>
+                        <option value="truck_container">
+                          Kamion za prijevoz kontejnera
+                        </option>
+                        <option value="truck_vehicles">
+                          Kamion za prijevoz vozila
+                        </option>
+                        <option value="truck_animals">
+                          Kamion za prijevoz životinja
+                        </option>
+                        <option value="truck_tipper">
+                          Kiper
+                        </option>
+                        <option value="truck_adr">
+                          ADR Truck
+                        </option>
+                      </select>
+                      <div class="error" *ngIf="submitted && added && truck.controls.truckType.errors?.required">Truck type is required</div>
+                    </div>
+                  </div>
+                  <div class="col-lg-3">
+                    <div class="form-group">
+                      <select formControlName="euroNorm" class="form-control">
+                        <option value="" disabled selected hidden>Euro norma</option>
+                        <option value="01">
+                          01
+                        </option>
+                        <option value="02">
+                          02
+                        </option>
+                        <option value="03">
+                          03
+                        </option>
+                        <option value="04">
+                          04
+                        </option>
+                        <option value="05">
+                          05
+                        </option>
+                        <option value="06">
+                          06
+                        </option>
+                        <option value="07">
+                          07
+                        </option>
+                      </select>
+                      <div class="error" *ngIf="submitted && added && truck.controls.euroNorm.errors?.required">Euronorm is required</div>
+                    </div>
+                  </div>
+                  <div class="col-lg-3">
+                    <div class="form-group">
+                      <input type="text" placeholder="Model vozila" formControlName="truckModel" class="form-control" maxlength="20">
+                      <div class="error" *ngIf="submitted && added && truck.controls.truckModel.errors?.required">Truck model is required</div>
+                    </div>
+                  </div>
+                  <div class="col-lg-3">
+                    <div class="form-group">
+                      <select formControlName="year" class="form-control">
+                        <option value="" disabled selected hidden>Godište</option>
+                        <option *ngFor="let year of years" value="{{year}}">
+                          {{year}}
+                        </option>
+                      </select>
+                      <div class="error" *ngIf="submitted && added && truck.controls.year.errors?.required">Year is required</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-lg-3">
+                    <div class="form-group">
+                      <input type="text" placeholder="Registration number" formControlName="regNumber" class="form-control" maxlength="15">
+                      <div class="error" *ngIf="submitted && added && truck.controls.regNumber.errors?.required">Reg number is required</div>
+                    </div>
+                  </div>
+                  <div class="col-lg-4">
+                    <input type="text"
+                    placeholder="Datum registracije"
+                    class="form-control"
+                    bsDatepicker
+                    formControlName="regDate"
+                    >
+                    <div class="error" *ngIf="submitted && added && truck.controls.regDate.errors?.required">Reg date is required</div>
+                  </div>
+                  <div class="col-lg-4">
+                    <div class="form-group">
+                      <input type="text" formControlName="maxWeight" class="form-control" placeholder="Max nosivost/kg" maxlength="6">
+                      <div class="error" *ngIf="submitted && added && truck.controls.maxWeight.errors?.required">Max weight is required</div>
+                      <div class="error" *ngIf="submitted && added && truck.controls.maxWeight.errors?.pattern">Numbers only. Example: 50000</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-lg-12" *ngIf="
+                  truck.truckTypeSelected == 'truck_refrigerated' ||
+                  truck.truckTypeSelected == 'truck' ||
+                  truck.truckTypeSelected == 'truck_van_hang' ||
+                  truck.truckTypeSelected == 'truck_half_trailer' ||
+                  truck.truckTypeSelected == 'truck_trailer' ||
+                  truck.truckTypeSelected == 'truck_special' ||
+                  truck.truckTypeSelected == 'truck_container' ||
+                  truck.truckTypeSelected == 'truck_vehicles' ||
+                  truck.truckTypeSelected == 'combi' ||
+                  truck.truckTypeSelected == 'caddy'
+                ">
+                <p class="text-success">
+                  *Molimo unesite točne podatke za dimenzije kontejnera. Prikazivat će Vam se
+                  samo oglasi koji odgovaraju Vašim gabaritima. Primjer, širina vozila - 1.34 metara
+                </p>
+                  <div class="row">
+                    <div class="col-lg-4">
+                      <div class="form-group">
+                        <input type="text" formControlName="height" class="form-control" placeholder="Visina/metara" maxlength="5">
+                        <div class="error" *ngIf="submitted && added && truck.controls.height.errors?.required">Max height</div>
+                        <div class="error" *ngIf="submitted && added && truck.controls.height.errors?.pattern">Decimal numbers only. Example: 3.45</div>
+                      </div>
+                    </div>
+                    <div class="col-lg-4">
+                      <div class="form-group">
+                        <input type="text" formControlName="width" class="form-control" placeholder="Širina/metara" maxlength="5">
+                        <div class="error" *ngIf="submitted && added && truck.controls.width.errors?.required">Max height</div>
+                        <div class="error" *ngIf="submitted && added && truck.controls.width.errors?.pattern">Decimal numbers only. Example: 3.45</div>
+                      </div>
+                    </div>
+                    <div class="col-lg-4">
+                      <div class="form-group">
+                        <input type="text" formControlName="tlength" class="form-control" placeholder="Dužina/metara" maxlength="5">
+                        <div class="error" *ngIf="submitted && added && truck.controls.tlength.errors?.required">Max height</div>
+                        <div class="error" *ngIf="submitted && added && truck.controls.tlength.errors?.pattern">Decimal numbers only. Example: 3.45</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-lg-12">
+                  <mat-checkbox formControlName="hydraulicRamp">Hidraulična rampa</mat-checkbox>
+                  <mat-checkbox formControlName="crane">Kran</mat-checkbox>
+                  <mat-checkbox formControlName="winches">Vitla</mat-checkbox>
+                  <mat-checkbox formControlName="adjustableRoof">Pomični krov</mat-checkbox>
+                  <mat-checkbox formControlName="movableFloor">Pomični pod</mat-checkbox>
+                  <mat-checkbox formControlName="movableTarpaulin">Pomična cerada</mat-checkbox>
+                  <mat-checkbox formControlName="rotatingSignalLight">Kran</mat-checkbox>
+                  <mat-checkbox formControlName="containerLifter">Podizač kontejnera</mat-checkbox>
+                </div>
+                <div class="col-lg-12">
+                  <div class="row">
+                    <div class="col-lg-4">
+                      <label class="lic">Preslika prometne dozvole</label>
+                      <div class="form-group">
+                        <input type="file" #filePicker (change)="onTLicPicked($event, i)">
+                        <div class="error" *ngIf="submitted && added && truck.controls.TLic.errors?.required">Lic is required</div>
+                      </div>
+                    </div>
+                    <div class="col-lg-4">
+                      <label class="lic">Preslika licence</label>
+                      <div class="form-group">
+                        <input type="file" #filePicker (change)="onLicPicked($event, i)">
+                        <div class="error" *ngIf="submitted && added && truck.controls.Lic.errors?.required">Lic is required</div>
+                      </div>
+                    </div>
+                    <div class="col-lg-4">
+                      <label class="lic">Preslika osiguranja CMR</label>
+                      <div class="form-group">
+                        <input type="file" #filePicker (change)="onCMRLicPicked($event, i)">
+                        <div class="error" *ngIf="submitted && added && truck.controls.CMRLic.errors?.required">Lic is required</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div>
+                  <button (click)="removeTruck(i)" class="btn">Remove</button>
+                </div>
+                <div>
+                  <button type="button" (click)="addTruck()" class="btn button-small">+</button>
+                </div>
+              </div>
+            </div>
+            <button type="submit" *ngIf="!isLoading" class="button-submit">GO</button>
+          </form>
+        </mat-step>
+        <mat-step label="Upload documents"></mat-step>
+      </mat-vertical-stepper>
+    </mat-card>
+  </div>
+</div>

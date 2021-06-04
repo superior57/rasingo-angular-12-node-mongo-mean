@@ -1,0 +1,19 @@
+<div class="container-fluid pages">
+  <div class="container header-add-pages">
+    <h1>Preporučite Rasingo te za svakog korisnika ostvarite 1 mjesec besplatno. Možete ostvariti max 5 mjeseci besplatnog korištenja</h1>
+  </div>
+  <div class="container cont-pages">
+    <mat-card>
+      <mat-spinner *ngIf="isLoading"></mat-spinner>
+      <p>Ispunite obrazac s emailom vaših kolega</p>
+      <form [formGroup]="inviteForm" (ngSubmit)="onInvite()" *ngIf="!isLoading">
+        <div class="form-group">
+          <input name="email" type="email" formControlName="email" placeholder="E-Mail" class="form-control">
+          <div class="error" *ngIf="submitted && inviteForm.controls.email.errors?.required">Email is required</div>
+          <div class="error" *ngIf="submitted && inviteForm.controls.email.errors?.email">Email is not valid</div>
+        </div>
+        <button type="submit" *ngIf="!isLoading" class="button-submit">GO</button>
+      </form>
+    </mat-card>
+  </div>
+</div>
